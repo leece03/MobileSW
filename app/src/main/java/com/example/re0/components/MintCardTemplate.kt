@@ -29,7 +29,6 @@ fun MintCardTemplate(
             .padding(10.dp)
             .fillMaxWidth()
             .clip(RoundedCornerShape(12.dp))
-            .height(150.dp)
             .border(
                 width = 2.dp,
                 color = Mint,
@@ -50,8 +49,7 @@ fun MintCardTemplate(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(100.dp)
-                .padding(1.dp)
+                .padding(10.dp)
                 .background(color = Color.White),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
