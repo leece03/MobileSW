@@ -1,58 +1,76 @@
 package com.example.re0.screens
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import com.example.re0.ui.theme.Mint
+import com.example.re0.components.MintCardTemplate
 
 @Composable
 fun HomeScreen( navController: NavController) {
-    Column(modifier = Modifier.fillMaxSize(),
-    horizontalAlignment = Alignment.CenterHorizontally,
+    Scaffold (
+        topBar = { TopBar() }
+    ) { innerPadding ->
+        Column(
+            modifier = Modifier.fillMaxSize()
+                .padding(innerPadding),
+            horizontalAlignment = Alignment.CenterHorizontally,
 
-        ){
-        Column(modifier = Modifier
-            .padding(10.dp)
-            .fillMaxWidth()
-            .clip(RoundedCornerShape(12.dp))
-            .height(150.dp)
-            .border(
-                width = 2.dp,
-                color = Mint,
-                shape = RoundedCornerShape(12.dp)  // ← 둥근 정도 조절
+            ) {
+            MintCardTemplate(
+                topContent = {
+                    Text(text="오늘의 제로웨이스트 TIP", color = Color.White, fontSize = 23.sp, fontWeight = FontWeight.Bold )
+                },
+                bottomContent = {
+                    Text(text="비누 끝 조각 합치기 프로젝트", color = Color.Black, fontSize = 18.sp, fontWeight = FontWeight.Bold )
+                    Text("욕실에서 쓰다 남은 비누 조각들 따뜻한 물에 잠깐 녹인 다음  눌러 담으면 새 비누 완성 \uD83E\uDDFC", color = Color.Black)
+                }
             )
-        )
-        {
-            Column (modifier = Modifier
-                .fillMaxWidth()
-                .height(50.dp)
-                .background(color = Mint))
-            {
-            }
-            Column (modifier = Modifier
-                .fillMaxWidth()
-                .height(100.dp)
-                .padding(1.dp)
-                .background(color = Color.White))
-            {
-            }
-        }
 
+            MintCardTemplate(
+                topContent = {
+                    Text(text="오늘의 다짐", color = Color.White, fontSize = 23.sp, fontWeight = FontWeight.Bold )
+                },
+                bottomContent = {
+                    Text("종이 영수증 받지 않기!", color = Color.Black, fontSize = 20.sp, fontWeight = FontWeight.Bold )
+                }
+            )
+
+            MintCardTemplate(
+                topContent = {
+                    Text(text="OX 퀴즈", color = Color.White, fontSize = 23.sp, fontWeight = FontWeight.Bold )
+                },
+                bottomContent = {
+                    Text("플라스틱 병의 라벨(비닐)은 제거하고 버려야 한다.", color = Color.Black, fontSize = 15.sp)
+                }
+            )
+
+            MintCardTemplate(
+                topContent = {
+                    Text(text="News", color = Color.White, fontSize = 23.sp, fontWeight = FontWeight.Bold )
+                },
+                bottomContent = {
+                    Text("플라스틱 병의 라벨(비닐)은 제거하고 버려야 한다.", color = Color.Black, fontSize = 15.sp)
+                    Row{
+
+                    }
+                }
+            )
+
+        }
     }
+
 }
 
 @Preview(showBackground = true)
