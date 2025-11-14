@@ -10,12 +10,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
+import com.example.re0.R
 import com.example.re0.components.MyProfile
+import com.example.re0.model.Profile
 import com.example.re0.viewModel.ProfileViewModel
 
 @Composable
-fun Mypage(navController: NavController,
+fun MypageScreen(navController: NavController,
            viewModel: ProfileViewModel = hiltViewModel()){
     Scaffold (
         topBar = { TopBar() },
@@ -27,14 +28,21 @@ fun Mypage(navController: NavController,
         Column(modifier = Modifier.fillMaxSize()
             .padding(innerPadding),
             horizontalAlignment = Alignment.CenterHorizontally,) {
-
+            val uiState = viewModel.uiState
+            MyProfile(uiState = uiState)
         }
     }
 }
 
 @Preview(showBackground = true)
 @Composable
-fun MypagePreview() {
-    val navController = rememberNavController() // preview 전용
-    Mypage(navController = navController)
+fun MyProfilePreview() {
+    val fakeProfile = Profile(
+        imageUrl = R.drawable.rectangle1_1,
+        name = "홍길동",
+        email = "test@example.com",
+        achievements = listOf()
+    )
+
+    MyProfile(uiState = fakeProfile)
 }

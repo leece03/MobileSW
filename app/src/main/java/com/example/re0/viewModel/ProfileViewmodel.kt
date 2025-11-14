@@ -13,7 +13,7 @@ import jakarta.inject.Inject
 import kotlinx.coroutines.launch
 
 @HiltViewModel
-class ProfileViewModel @Inject constructor(
+open class ProfileViewModel @Inject constructor(
     private val repository: MypageRepository
 ) : ViewModel() {
 

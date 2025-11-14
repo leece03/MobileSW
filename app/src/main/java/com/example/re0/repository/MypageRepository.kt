@@ -6,7 +6,7 @@ import com.example.re0.model.Achievement
 import com.example.re0.model.Profile
 import jakarta.inject.Inject
 
-class MypageRepository@Inject constructor(
+open class MypageRepository@Inject constructor(
     private val achievementDao: AchievementDao,
     private val profileDao: ProfileDao,
     ) {
