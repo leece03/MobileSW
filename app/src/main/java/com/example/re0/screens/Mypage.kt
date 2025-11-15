@@ -11,7 +11,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.re0.R
+import com.example.re0.components.MyBadge
 import com.example.re0.components.MyProfile
+import com.example.re0.model.Achievement
 import com.example.re0.model.Profile
 import com.example.re0.viewModel.ProfileViewModel
 
@@ -22,14 +24,12 @@ fun MypageScreen(navController: NavController,
         topBar = { TopBar() },
         bottomBar ={ BottomBar()}
     ) {innerPadding ->
-        val uiState = viewModel.uiState
-        MyProfile(uiState = uiState)
-
         Column(modifier = Modifier.fillMaxSize()
             .padding(innerPadding),
             horizontalAlignment = Alignment.CenterHorizontally,) {
             val uiState = viewModel.uiState
             MyProfile(uiState = uiState)
+            MyBadge(achievements = uiState.achievements)
         }
     }
 }
@@ -43,6 +43,43 @@ fun MyProfilePreview() {
         email = "test@example.com",
         achievements = listOf()
     )
+    val fackAchievements = listOf(
+        Achievement(
+            title = "First Step",
+            iconUrl = R.drawable.rectangle1_2,
+        ),
+        Achievement(
+            title = "First Step2",
+            iconUrl = R.drawable.rectangle1_1,
+        ),
+        Achievement(
+            title = "First Step3",
+            iconUrl = R.drawable.rectangle1_2,
+        ),
+        Achievement(
+            title = "First Step4",
+            iconUrl = R.drawable.rectangle1_1,
+        ),
+        Achievement(
+            title = "First Step",
+            iconUrl = R.drawable.rectangle1_2,
+        ),
+        Achievement(
+            title = "First Step2",
+            iconUrl = R.drawable.rectangle1_1,
+        ),
+        Achievement(
+            title = "First Step3",
+            iconUrl = R.drawable.rectangle1_2,
+        ),
+        Achievement(
+            title = "First Step4",
+            iconUrl = R.drawable.rectangle1_1,
+        )
 
-    MyProfile(uiState = fakeProfile)
+    )
+    Column(modifier = Modifier.fillMaxSize()) {
+        MyProfile(uiState = fakeProfile)
+        MyBadge(achievements = fackAchievements)
+    }
 }

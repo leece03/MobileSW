@@ -74,7 +74,7 @@ fun MyProfile(
                             .background(Mint),
                         contentScale = ContentScale.Crop
                     )
-                    Spacer(modifier = Modifier.width(40.dp))
+                    Spacer(modifier = Modifier.width(20.dp))
                     Column {
                         Text("닉네임: ${uiState.name}", fontSize = 15.sp)
                         Text("이메일: ${uiState.email}", fontSize = 15.sp)
@@ -115,8 +115,20 @@ fun MyProfilePreview() {
             name = "홍길동",
             email = "hong@test.com",
             achievements = listOf(
-                Achievement("프리뷰 배지1"),
-                Achievement("프리뷰 배지2")
+                Achievement(
+                    iconUrl = R.drawable.rectangle1_1,
+                    date = "2023.10.25",
+                    description = "재활용 10회 이상",
+                    title = "배지1",
+
+                    ),
+                Achievement(
+                    iconUrl = R.drawable.rectangle1_1,
+                    date = "2023.10.25",
+                    description = "재활용 10회 이상",
+                    title = "배지1",
+
+                    )
             )
         )
     )

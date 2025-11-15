@@ -4,7 +4,7 @@ import androidx.room.Entity
 @Entity(tableName = "achievements")
 class Achievement(
     val title: String,
-    val description: String? = null,
-    val date: String? = null,
-    val iconUrl: String? = null
+    val description: String?=null,
+    val date: String?=null,
+    val iconUrl: Int
 )
