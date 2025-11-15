@@ -28,7 +28,7 @@ import com.example.re0.R
 @Composable
 fun MyNewScreen(modifier: Modifier = Modifier) {
 
-    Box(
+    Box(// 재pr
         modifier = modifier
             .fillMaxSize()
             .background(Color.White),
