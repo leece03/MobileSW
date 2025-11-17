@@ -4,6 +4,10 @@ plugins {
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.ksp)
     alias(libs.plugins.hilt)
+    //id("com.android.application")
+    alias(libs.plugins.google.secrets)
+    alias(libs.plugins.google.services)
+    //id("com.google.gms.google-services")
 }
 
 android {
@@ -18,6 +22,7 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
     }
 
     buildTypes {
@@ -29,18 +34,24 @@ android {
             )
         }
     }
+
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
-    kotlinOptions {
-        jvmTarget = "11"
-    }
+    //kotlinOptions {
+    //    jvmTarget = "11"
+    //}
     buildFeatures {
+        buildConfig = true
         compose = true
     }
 }
-
+tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
+    compilerOptions {
+        jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17)
+    }
+}
 dependencies {
     implementation("androidx.compose.material:material-icons-extended:<version>")
     implementation(libs.androidx.core.ktx)
@@ -69,7 +80,8 @@ dependencies {
 
     // Room dependencies
     implementation(libs.androidx.room.runtime)
-    ksp(libs.androidx.room.compiler)
+    //implementation("com.google.dagger:dagger-compiler:2.51.1")
+    ksp("com.google.dagger:dagger-compiler:2.51.1")
     implementation(libs.androidx.room.ktx)
 
     // Hilt  dependencies
@@ -80,9 +92,12 @@ dependencies {
     // DataStore (Preferences)
     implementation(libs.androidx.datastore.preferences)
 
-    //mapCompose
-    implementation("com.google.maps.android:maps-compose:4.3.0")
-    implementation("com.google.android.gms:play-services-maps:18.2.0")
+    // Maps Compose 의존성 추가
+    implementation(libs.maps.compose)
+// 현재 위치(FusedLocation)용
+    implementation(libs.play.services.location)
+    //implementation(platform("com.google.firebase:firebase-bom:34.5.0"))
+    //implementation("com.google.firebase:firebase-analytics")
 }
 hilt {
     enableAggregatingTask = false
