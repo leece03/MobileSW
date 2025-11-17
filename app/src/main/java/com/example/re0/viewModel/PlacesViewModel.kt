@@ -25,7 +25,7 @@ class PlacesViewModel @Inject constructor(
         loadPlaces()
     }
     private val _filteredPlaces = MutableStateFlow<List<Place>>(emptyList())
-
+    val filteredPlaces: StateFlow<List<Place>> = _filteredPlaces
     fun applyFilter(type: PlaceType) {
         val list = _places.value.filter { it.type == type }
         _filteredPlaces.value = list

@@ -7,6 +7,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -17,6 +19,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.example.re0.components.FilterButton
+import com.example.re0.components.PlaceItem
 import com.example.re0.model.PlaceType
 import com.example.re0.ui.theme.Mint
 import com.example.re0.viewModel.PlacesViewModel
@@ -29,7 +32,17 @@ import com.google.maps.android.compose.rememberCameraPositionState
 
 @Composable
 fun MapScreen(viewModel: PlacesViewModel = hiltViewModel()){
-    val placeList by viewModel.places.collectAsState()
+    val places by viewModel.places.collectAsState()
+    val filteredPlaces by viewModel.filteredPlaces.collectAsState()
+
+    val placeList = if (filteredPlaces.isNotEmpty()) {
+        filteredPlaces
+    } else {
+        places
+    }
+
+    // 어떤 리스트를 보여줄지 선택
+    val listToShow = if (filteredPlaces.isNotEmpty()) filteredPlaces else placeList
     // 서울 좌표
     val seoul = LatLng(37.5665, 126.9780)
 // 카메라 초기 위치
@@ -71,6 +84,11 @@ fun MapScreen(viewModel: PlacesViewModel = hiltViewModel()){
                     FilterButton("제로웨이스트") { viewModel.applyFilter(PlaceType.ZERO_WASTE) }
                     FilterButton("텀블러 할인") { viewModel.applyFilter(PlaceType.TUMBLER_DISCOUNT) }
                     FilterButton("분리수거장") { viewModel.applyFilter(PlaceType.RECYCLE_BIN) }
+                }
+                LazyColumn(modifier = Modifier.fillMaxSize()) {
+                    items(listToShow) { place ->
+                        PlaceItem(place)
+                    }
                 }
 
             }
