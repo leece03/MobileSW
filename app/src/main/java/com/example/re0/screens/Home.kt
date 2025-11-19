@@ -21,11 +21,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import com.example.re0.R
 import com.example.re0.components.CardTemplate
 import com.example.re0.components.NewsCard
@@ -33,7 +32,7 @@ import com.example.re0.model.NewsItem
 import com.example.re0.ui.theme.Mint
 
 @Composable
-fun HomeScreen( navController: NavController) {
+fun HomeScreen( navController: NavController, backStackEntry: NavBackStackEntry) {
     val newsList = listOf(
         NewsItem(
             title = "폐플라스틱 재활용, '화학적 분해' 혁신 기술 도입",
@@ -60,7 +59,7 @@ fun HomeScreen( navController: NavController) {
 
     Scaffold (
         topBar = { TopBar() },
-        bottomBar ={ BottomBar()}
+        bottomBar ={ BottomBar(navController)}
     ) { innerPadding ->
         Column(
             modifier = Modifier.fillMaxSize()
@@ -147,10 +146,13 @@ fun HomeScreen( navController: NavController) {
         }
     }
 }
-
+/*
 @Preview(showBackground = true)
 @Composable
 fun HomePreview() {
     val navController = rememberNavController() // preview 전용
     HomeScreen(navController = navController)
 }
+
+
+ */

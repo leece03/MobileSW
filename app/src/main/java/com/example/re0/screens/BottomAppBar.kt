@@ -1,6 +1,7 @@
 package com.example.re0.screens
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -17,12 +18,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.example.re0.R
 import com.example.re0.ui.theme.Mint
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun BottomBar(){
+fun BottomBar( navController: NavController){
     Column {
         HorizontalDivider(
             Modifier, DividerDefaults.Thickness, color = Mint
@@ -40,31 +42,42 @@ fun BottomBar(){
                     painter = painterResource(id = R.drawable.info),
                     contentDescription = "bottomAppBar",
                     modifier = Modifier
-                        .size(28.dp)
+                        .size(28.dp).clickable {
+                            navController.navigate("info")
+                        }
                 )
                 Image(
                     painter = painterResource(id = R.drawable.map),
                     contentDescription = "bottomAppBar",
                     modifier = Modifier
-                        .size(28.dp)
+                        .size(28.dp).clickable {
+                            navController.navigate("map")
+                        }
                 )
                 Image(
                     painter = painterResource(id = R.drawable.home),
                     contentDescription = "bottomAppBar",
                     modifier = Modifier
-                        .size(28.dp)
+                        .size(28.dp).clickable {
+                            navController.navigate("home")
+                        }
                 )
                 Image(
                     painter = painterResource(id = R.drawable.history),
                     contentDescription = "bottomAppBar",
                     modifier = Modifier
-                        .size(28.dp)
+                        .size(28.dp).clickable {
+                            navController.navigate("history")
+                        }
                 )
                 Image(
                     painter = painterResource(id = R.drawable.mypage),
                     contentDescription = "bottomAppBar",
                     modifier = Modifier
-                        .size(28.dp)
+                        .size(28.dp).clickable {
+                            navController.navigate("profile")
+                        }
+
                 )
             }
         }
@@ -74,5 +87,5 @@ fun BottomBar(){
 @Preview (showBackground = true)
 @Composable
 fun BottomBarPreview(){
-    BottomBar()
+    //BottomBar()
 }

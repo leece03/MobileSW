@@ -69,6 +69,8 @@ dependencies {
     //implementation(libs.firebase.firestore.ktx)
     implementation(libs.firebase.messaging)
     implementation(libs.firebase.firestore)
+    implementation(libs.navigation.compose)
+    //implementation(libs.navigation.compose)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -87,7 +89,7 @@ dependencies {
     // Room dependencies
     implementation(libs.androidx.room.runtime)
     //implementation("com.google.dagger:dagger-compiler:2.51.1")
-    ksp("com.google.dagger:dagger-compiler:2.51.1")
+    ksp(libs.androidx.room.compiler)
     implementation(libs.androidx.room.ktx)
 
     // Hilt  dependencies
@@ -104,6 +106,9 @@ dependencies {
     implementation(libs.play.services.location)
     //implementation(platform("com.google.firebase:firebase-bom:34.5.0"))
     //implementation("com.google.firebase:firebase-analytics")
+
+    implementation("com.google.code.gson:gson:2.10.1")
+
 }
 hilt {
     enableAggregatingTask = false

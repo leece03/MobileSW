@@ -32,3 +32,4 @@ object DatabaseModule {
     @Provides
     fun provideProfileDao(db: AppDatabase): ProfileDao = db.profileDao()
 }
+
