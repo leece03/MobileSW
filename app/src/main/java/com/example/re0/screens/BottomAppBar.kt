@@ -75,7 +75,7 @@ fun BottomBar( navController: NavController){
                     contentDescription = "bottomAppBar",
                     modifier = Modifier
                         .size(28.dp).clickable {
-                            navController.navigate("profile")
+                            navController.navigate("mypage")
                         }
 
                 )
