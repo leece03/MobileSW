@@ -23,7 +23,8 @@ object DatabaseModule {
             context,
             AppDatabase::class.java,
             "app_db"
-        ).build()
+        ).fallbackToDestructiveMigration(dropAllTables = true)
+            .build()
     }
 
     @Provides
@@ -32,3 +33,4 @@ object DatabaseModule {
     @Provides
     fun provideProfileDao(db: AppDatabase): ProfileDao = db.profileDao()
 }
+

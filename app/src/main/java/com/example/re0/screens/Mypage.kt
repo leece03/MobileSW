@@ -1,6 +1,5 @@
 package com.example.re0.screens
 
-import android.annotation.SuppressLint
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Column
@@ -10,24 +9,23 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavController
-import com.example.re0.R
 import com.example.re0.components.AchievementsGraph
 import com.example.re0.components.MyBadge
 import com.example.re0.components.MyProfile
-import com.example.re0.model.Achievement
-import com.example.re0.model.Profile
 import com.example.re0.viewModel.ProfileViewModel
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun MypageScreen(navController: NavController,
-           viewModel: ProfileViewModel = hiltViewModel()){
+                 viewModel: ProfileViewModel = hiltViewModel(),
+                 backStackEntry: NavBackStackEntry
+){
     Scaffold (
         topBar = { TopBar() },
-        bottomBar ={ BottomBar()}
+        bottomBar ={ BottomBar(navController)}
     ) {innerPadding ->
         Column(modifier = Modifier.fillMaxSize()
             .padding(innerPadding),
@@ -39,7 +37,7 @@ fun MypageScreen(navController: NavController,
         }
     }
 }
-
+/*
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @RequiresApi(Build.VERSION_CODES.O)
 @Preview(showBackground = true)
@@ -122,3 +120,5 @@ fun MyProfilePreview() {
     }
 }
 }
+
+ */

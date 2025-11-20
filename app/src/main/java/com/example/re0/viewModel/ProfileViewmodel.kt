@@ -18,7 +18,7 @@ open class ProfileViewModel @Inject constructor(
 ) : ViewModel() {
 
     var uiState by mutableStateOf(Profile(
-        imageUrl = android.R.drawable.sym_def_app_icon,
+        imageUrl = "file:///android_res/drawable/rectangle1_1",
         name = "",
         email = "",
         achievements = emptyList()

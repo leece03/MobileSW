@@ -39,6 +39,8 @@ googleServices = "4.4.4"
 firebaseFirestoreKtx = "26.0.2"
 firebaseMessaging = "25.0.1"
 firebaseFirestore = "26.0.2"
+#navigationCompose = "2.9.6"
+navigationComposeVersion = "2.9.6"
 
 
 [libraries]
@@ -59,6 +61,7 @@ androidx-compose-material3 = { group = "androidx.compose.material3", name = "mat
 
 # Lifecycle / ViewModel
 androidx-lifecycle-viewmodel = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-ktx", version.ref = "lifecycle" }
+
 
 #Navigation Compose(BOM 사용)
 androidx-navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "navigation" }
@@ -83,6 +86,8 @@ play-services-location = {module = "com.google.android.gms:play-services-locatio
 firebase-firestore-ktx = { group = "com.google.firebase", name = "firebase-firestore-ktx", version.ref = "firebaseFirestoreKtx" }
 firebase-messaging = { group = "com.google.firebase", name = "firebase-messaging", version.ref = "firebaseMessaging" }
 firebase-firestore = { group = "com.google.firebase", name = "firebase-firestore", version.ref = "firebaseFirestore" }
+navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "navigationComposeVersion" }
+#navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "navigationCompose" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

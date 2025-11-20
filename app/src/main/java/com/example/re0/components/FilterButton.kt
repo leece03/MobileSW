@@ -1,9 +1,10 @@
 package com.example.re0.components
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -14,18 +15,22 @@ import com.example.re0.ui.theme.Mint
 @Composable
 fun FilterButton(
     text: String,
+    selected: Boolean,
     onClick: () -> Unit
 ) {
-    Button(
-        onClick = onClick,
+    val backgroundColor = if (selected) Color.White else Mint
+    val textColor = if (selected) Mint else Color.White
+
+    Box(
         modifier = Modifier
-            .padding(6.dp),
-        shape = RoundedCornerShape(20.dp),
-        colors = ButtonDefaults.buttonColors(
-            containerColor = Mint,
-            contentColor = Color.White
-        )
+            .padding(4.dp)
+            .background(backgroundColor, RoundedCornerShape(12.dp))
+            .clickable { onClick() }
+            .padding(horizontal = 16.dp, vertical = 8.dp)
     ) {
-        Text(text)
+        Text(
+            text = text,
+            color = textColor
+        )
     }
 }
