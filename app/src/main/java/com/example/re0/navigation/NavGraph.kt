@@ -11,7 +11,7 @@ import com.example.re0.screens.HomeScreen
 import com.example.re0.screens.InfoScreen
 import com.example.re0.screens.MapScreen
 import com.example.re0.screens.MypageScreen
-import com.example.re0.screens.RecordScreen
+//import com.example.re0.screens.RecordScreen
 import com.example.re0.viewModel.PlacesViewModel
 import com.example.re0.viewModel.ProfileViewModel
 
@@ -29,7 +29,7 @@ fun NavGraph(navController: NavHostController) {
            InfoScreen(navController,backStackEntry)
         }
         composable("history") {backStackEntry ->
-            RecordScreen(navController,backStackEntry)
+            //RecordScreen(navController,backStackEntry)
         }
         composable("mypage") {backStackEntry ->
             MypageScreen(navController,profileViewModle,backStackEntry)
