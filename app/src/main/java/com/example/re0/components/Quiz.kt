@@ -1,5 +1,7 @@
 package com.example.re0.components
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -20,54 +22,43 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.re0.R
 import com.example.re0.model.QuizItem
 import com.example.re0.viewModel.QuizViewModel
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun QuizScreen(viewModel: QuizViewModel = viewModel()) {
+fun QuizScreen(viewModel: QuizViewModel = hiltViewModel()) {
 
     DailyQuizQueue(
         quizQueue = viewModel.quizQueue,
+        selected = viewModel.selected,
         onAnswerSelected = { isCorrect ->
-            viewModel.processAnswer(isCorrect)
+            viewModel.onAnswerSelected(isCorrect)
         }
     )
 }
-
 @Composable
-fun DailyQuizQueue( quizQueue: List<QuizItem>,
-                    onAnswerSelected: (Boolean) -> Unit){
+fun DailyQuizQueue(  quizQueue: List<QuizItem>,
+                     selected: Boolean,
+                     onAnswerSelected: (Boolean) -> Unit){
     val todayQuiz = quizQueue.first()
-    var selected by remember { mutableStateOf<String?>("")}
-    var isCorrect by remember  { mutableStateOf<Boolean>(false) }
 
-    Text("플라스틱 병의 라벨(비닐)은 제거하고 버려야 한다.", color = Color.Black, fontSize = 16.sp)
-    Spacer(modifier = Modifier.height(10.dp))
+    Text(todayQuiz.question)
+    Spacer(Modifier.height(10.dp))
 
-    if (selected != "") {
-        var answerText=""
-        if (selected == "yes" && todayQuiz.correctAnswer){
-            answerText="정답입니다"
-            isCorrect = true
-        }else{
-            answerText="오답입니다"
-            isCorrect =false
-        }
-
-        Text(
-            text = answerText,
-            color = if (isCorrect) Color.Green else Color.Red,
-            fontSize = 18.sp
-        )
+    if (selected) {
+        val correctText = if (todayQuiz.correctAnswer) "정답입니다" else "오답입니다"
+        Text(correctText, color = Color.Blue, fontSize = 20.sp)
     }
 
     Row(modifier = Modifier.padding(10.dp)) {
         FloatingActionButton(
             onClick = {
-                if(selected == "")
-                    selected = "yes";
+                if( !selected)
+                    onAnswerSelected(true)
             },
             modifier = Modifier.width(150.dp),
             containerColor = Color.White,
@@ -81,8 +72,8 @@ fun DailyQuizQueue( quizQueue: List<QuizItem>,
         }
         FloatingActionButton(
             onClick = {
-                if(selected == "")
-                    selected = "no";
+                if( !selected)
+                    onAnswerSelected(true)
             },
             modifier = Modifier.width(150.dp),
             containerColor = Color.White,
