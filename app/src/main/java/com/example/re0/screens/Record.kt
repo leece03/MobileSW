@@ -11,7 +11,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Checkbox
@@ -34,7 +36,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavController
 import com.example.re0.ui.theme.Mint
@@ -212,7 +213,11 @@ fun RecordContent(
     var sunday by remember { mutableStateOf("대형 폐기물") }
 
     Column(
-        modifier = Modifier.fillMaxWidth().padding(innerPadding).padding(16.dp),
+        modifier = Modifier.fillMaxWidth()
+            .padding(innerPadding)
+            .padding(16.dp)
+            .verticalScroll(rememberScrollState())
+        ,
         verticalArrangement = Arrangement.spacedBy(29.dp),
         horizontalAlignment = Alignment.Start,
     ) {
