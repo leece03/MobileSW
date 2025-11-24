@@ -7,10 +7,12 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.example.re0.screens.ChallengeScreen
 import com.example.re0.screens.HomeScreen
 import com.example.re0.screens.InfoScreen
 import com.example.re0.screens.MapScreen
 import com.example.re0.screens.MypageScreen
+import com.example.re0.screens.RecordScreen
 //import com.example.re0.screens.RecordScreen
 import com.example.re0.viewModel.PlacesViewModel
 import com.example.re0.viewModel.ProfileViewModel
@@ -29,7 +31,7 @@ fun NavGraph(navController: NavHostController) {
            InfoScreen(navController,backStackEntry)
         }
         composable("history") {backStackEntry ->
-            //RecordScreen(navController,backStackEntry)
+            RecordScreen(navController,backStackEntry)
         }
         composable("mypage") {backStackEntry ->
             MypageScreen(navController,profileViewModle,backStackEntry)
@@ -37,8 +39,9 @@ fun NavGraph(navController: NavHostController) {
         composable("map") {backStackEntry ->
             MapScreen(navController,placeViewModle,backStackEntry)
         }
-        composable("challenge") {
-
+        composable("challenge") { backStackEntry ->
+            ChallengeScreen(navController)
         }
+
     }
 }

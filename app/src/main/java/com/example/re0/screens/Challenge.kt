@@ -1,14 +1,56 @@
 package com.example.re0.screens
 
+import android.util.Log
+import android.widget.CalendarView
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Checkbox
+import androidx.compose.material3.Divider
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.FloatingActionButtonDefaults
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.draw.scale
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.compose.ui.viewinterop.AndroidView
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
+import com.example.re0.R
+import com.example.re0.components.CardTemplate
+import com.example.re0.ui.theme.Mint
+import com.example.re0.ui.theme.SkyBlue
 
-/*
+
 @Composable
-fun RecordScreen(navController: NavController) {
+fun ChallengeScreen(navController: NavController) {
     Scaffold(
         topBar = { TopBar() },
-        bottomBar = { BottomBar() }
+        bottomBar = { BottomBar(navController) }
     ) { innerPadding ->
-        RecordContent(innerPadding)
+        ChallengeContent(innerPadding, navController)
+
     }
 }
 
@@ -29,7 +71,7 @@ fun DefaultCalendarView(
 }
 
 @Composable
-fun GoalItem(
+fun ChallengeGoalItem(
     text: String,
     checked: Boolean,
     onCheckedChange: (Boolean) -> Unit
@@ -53,7 +95,7 @@ fun GoalItem(
         // 회색 영역
         Row(
             modifier = Modifier
-                .weight(1f)   // ← width(307.dp)를 없애고 자동으로 꽉 차게!
+                .weight(1f)
                 .height(42.dp)
                 .background(
                     color = Color(0xFFD4F1FD),
@@ -64,24 +106,26 @@ fun GoalItem(
         ) {
             Text(
                 text = text,
-                style = androidx.compose.ui.text.TextStyle(
-                    fontSize = 16.sp,
-                    lineHeight = 22.4.sp,
-                    fontWeight = FontWeight.W400,
-                    color = Color(0xFF656565),
-                )
+                fontSize = 16.sp,
+                lineHeight = 22.4.sp,
+                fontWeight = FontWeight.W400,
+                color = Color(0xFF656565)
             )
         }
     }
 }
 
 @Composable
-fun RecordContent(innerPadding: PaddingValues) {
+fun ChallengeContent(innerPadding: PaddingValues, navController: NavController)
+ {
     Column(
-        modifier = Modifier.fillMaxWidth().padding(innerPadding).padding(16.dp).verticalScroll(rememberScrollState()),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(innerPadding)
+            .padding(16.dp)
+            .verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.spacedBy(29.dp, Alignment.Top),
         horizontalAlignment = Alignment.Start,
-
     ) {
         Column(
             modifier = Modifier
@@ -108,12 +152,10 @@ fun RecordContent(innerPadding: PaddingValues) {
             ) {
                 Text(
                     text = "챌린지 등록",
-                    style = androidx.compose.ui.text.TextStyle(
-                        fontSize = 24.sp,
-                        lineHeight = 33.6.sp,
-                        fontWeight = FontWeight(700),
-                        color = Color(0xFF000000),
-                    )
+                    fontSize = 24.sp,
+                    lineHeight = 33.6.sp,
+                    fontWeight = FontWeight(700),
+                    color = Color(0xFF000000),
                 )
             }
             Column(
@@ -123,12 +165,10 @@ fun RecordContent(innerPadding: PaddingValues) {
             ) {
                 Text(
                     text = "나만의 챌린지를 등록해 보세요",
-                    style = androidx.compose.ui.text.TextStyle(
-                        fontSize = 16.sp,
-                        lineHeight = 22.4.sp,
-                        fontWeight = FontWeight(400),
-                        color = Color(0xFF656565),
-                    )
+                    fontSize = 16.sp,
+                    lineHeight = 22.4.sp,
+                    fontWeight = FontWeight(400),
+                    color = Color(0xFF656565),
                 )
                 Column(
                     modifier = Modifier
@@ -141,12 +181,10 @@ fun RecordContent(innerPadding: PaddingValues) {
                 ) {
                     Text(
                         text = "입력하기",
-                        style = androidx.compose.ui.text.TextStyle(
-                            fontSize = 16.sp,
-                            lineHeight = 22.4.sp,
-                            fontWeight = FontWeight(400),
-                            color = Color(0xFF656565),
-                        )
+                        fontSize = 16.sp,
+                        lineHeight = 22.4.sp,
+                        fontWeight = FontWeight(400),
+                        color = Color(0xFF656565),
                     )
                 }
 
@@ -180,21 +218,17 @@ fun RecordContent(innerPadding: PaddingValues) {
             ) {
                 Text(
                     text = "달성 기록",
-                    style = androidx.compose.ui.text.TextStyle(
-                        fontSize = 24.sp,
-                        lineHeight = 33.6.sp,
-                        fontWeight = FontWeight(700),
-                        color = Color(0xFF000000),
-                    )
+                    fontSize = 24.sp,
+                    lineHeight = 33.6.sp,
+                    fontWeight = FontWeight(700),
+                    color = Color(0xFF000000),
                 )
                 Text(
                     text = "나만의 목표 등록 및 달성 기록",
-                    style = androidx.compose.ui.text.TextStyle(
-                        fontSize = 16.sp,
-                        lineHeight = 22.4.sp,
-                        fontWeight = FontWeight(400),
-                        color = Color(0xFF656565),
-                    )
+                    fontSize = 16.sp,
+                    lineHeight = 22.4.sp,
+                    fontWeight = FontWeight(400),
+                    color = Color(0xFF656565),
                 )
             }
             Column(
@@ -213,12 +247,12 @@ fun RecordContent(innerPadding: PaddingValues) {
                     color = Mint,
                     thickness = 1.dp
                 )
-                GoalItem(
+                ChallengeGoalItem(
                     text = "배달음식 안시켜먹기",
                     checked = false,
                     onCheckedChange = { /* TODO */ }
                 )
-                GoalItem(
+                ChallengeGoalItem(
                     text = "배달음식 안시켜먹기",
                     checked = false,
                     onCheckedChange = { /* TODO */ }
@@ -232,16 +266,14 @@ fun RecordContent(innerPadding: PaddingValues) {
 
 @Preview(showBackground = true)
 @Composable
-fun RecordPreview() {
+fun ChallengePreview() {
     val navController = rememberNavController()
 
     Scaffold(
-        topBar = { TopBar() },     // 실제 TopBar
-        bottomBar = { BottomBar() } // 실제 BottomBar
+        topBar = { TopBar() },
+        bottomBar = { BottomBar(navController) }
     ) { innerPadding ->
-        RecordContent(innerPadding)
+        ChallengeContent(innerPadding, navController)
+
     }
 }
-
-
- */

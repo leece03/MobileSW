@@ -113,6 +113,7 @@ object DatabaseModule {
 
                     }
                 })
+            .fallbackToDestructiveMigration()
             .build()
 
         dbInstance = instance
