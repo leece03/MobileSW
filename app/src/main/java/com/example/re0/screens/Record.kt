@@ -1,67 +1,115 @@
 package com.example.re0.screens
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
+import androidx.compose.material3.Checkbox
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.draw.scale
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavBackStackEntry
+import androidx.navigation.NavController
+import com.example.re0.ui.theme.Mint
+import com.example.re0.ui.theme.NeonBlue
+import com.example.re0.viewModel.AchievementViewModel
 
-/*
 @Composable
-fun RecordScreen(navController: NavController,  backStackEntry: NavBackStackEntry) {
+fun RecordScreen(navController: NavController, backStackEntry: NavBackStackEntry) {
+
+    val viewModel: AchievementViewModel = hiltViewModel()
+
+
     Scaffold(
         topBar = { TopBar() },
         bottomBar = { BottomBar(navController) }
     ) { innerPadding ->
-        RecordContent(innerPadding)
+        RecordContent(innerPadding, viewModel, navController)
     }
+
 }
 
 @Composable
 fun GarbageDayItem(
-    day: String,          // "월", "화", "수" ...
-    description: String   // "재활용 수거일"
+    day: String,
+    description: String,
+    onDescriptionChange: (String) -> Unit,
 ) {
+    var showDialog by remember { mutableStateOf(false) }
+
+    if (showDialog) {
+        EditDescriptionDialog(
+            initialText = description,
+            onConfirm = {
+                onDescriptionChange(it)
+                showDialog = false
+            },
+            onCancel = { showDialog = false }
+        )
+    }
+
     Column(
         modifier = Modifier
+            .height(130.dp)
             .width(43.dp)
-            .background(
-                color = Color(0x2601E7C5),
-                shape = RoundedCornerShape(5.dp)
-            )
+            .background(color = Color(0x2601E7C5), shape = RoundedCornerShape(5.dp))
             .padding(4.dp),
         verticalArrangement = Arrangement.spacedBy(17.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
 
-        // 요일
         Text(
             text = day,
-            style = androidx.compose.ui.text.TextStyle(
-                fontSize = 17.44.sp,
-                lineHeight = 24.42.sp,
-                fontWeight = FontWeight.W400,
-                color = Color.Black,
-                textAlign = TextAlign.Center
-            )
+            fontSize = 17.44.sp,
+            fontWeight = FontWeight.W400,
+            color = Color.Black
         )
 
-        // 설명 박스
         Column(
             modifier = Modifier
                 .width(38.88.dp)
-                .padding(vertical = 14.dp),
+                .padding(vertical = 14.dp)
+                .clickable { showDialog = true },
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
                 text = description,
-                style = androidx.compose.ui.text.TextStyle(
-                    fontSize = 11.sp,
-                    lineHeight = 15.4.sp,
-                    fontWeight = FontWeight.W400,
-                    color = Color.Black,
-                )
+                fontSize = 11.sp,
+                color = Color.Black
             )
         }
     }
 }
+
 @Composable
-fun GoalItem(
+fun RecordGoalItem(
     text: String,
     checked: Boolean,
     onCheckedChange: (Boolean) -> Unit
@@ -75,17 +123,15 @@ fun GoalItem(
         verticalAlignment = Alignment.CenterVertically
     ) {
 
-        // 체크박스
         Checkbox(
             checked = checked,
             onCheckedChange = onCheckedChange,
             modifier = Modifier.scale(1.4f)
         )
 
-        // 회색 영역
         Row(
             modifier = Modifier
-                .weight(1f)   // ← width(307.dp)를 없애고 자동으로 꽉 차게!
+                .weight(1f)
                 .height(42.dp)
                 .background(
                     color = Color(0xFFE1E7E9),
@@ -96,29 +142,88 @@ fun GoalItem(
         ) {
             Text(
                 text = text,
-                style = androidx.compose.ui.text.TextStyle(
-                    fontSize = 16.sp,
-                    lineHeight = 22.4.sp,
-                    fontWeight = FontWeight.W400,
-                    color = Color(0xFF656565),
-                )
+                fontSize = 16.sp,
+                fontWeight = FontWeight.W400,
+                color = Color(0xFF656565),
             )
         }
     }
 }
 
 @Composable
-fun RecordContent(innerPadding: PaddingValues) {
+fun EditDescriptionDialog(
+    initialText: String,
+    onConfirm: (String) -> Unit,
+    onCancel: () -> Unit
+) {
+    var text by remember { mutableStateOf(initialText) }
+
+    AlertDialog(
+        onDismissRequest = onCancel,
+        title = { Text("설명 수정") },
+        text = {
+            TextField(
+                value = text,
+                onValueChange = { text = it },
+                singleLine = true
+            )
+        },
+        confirmButton = {
+            Button(onClick = { onConfirm(text) }) {
+                Text("확인")
+            }
+        },
+        dismissButton = {
+            Button(onClick = onCancel) {
+                Text("취소")
+            }
+        }
+    )
+}
+
+@Composable
+fun RecordContent(
+    innerPadding: PaddingValues,
+    viewModel: AchievementViewModel,
+    navController: NavController
+)
+
+{
+    val achievements by viewModel.achievementList.collectAsState()
+
+
+    val totalGoals = achievements.size
+    val totalChecked = achievements.count { it.isDone }
+
+    val progressPercent = if (totalGoals == 0) 0
+    else ((totalChecked.toFloat() / totalGoals.toFloat()) * 100).toInt()
+
+    val progressFraction = progressPercent / 100f
+
+
+    // ----------------------------
+
+    var monday by remember { mutableStateOf("재활용 수거일") }
+    var tuesday by remember { mutableStateOf("일반 쓰레기") }
+    var wednesday by remember { mutableStateOf("음식물 수거일") }
+    var thursday by remember { mutableStateOf("대형 폐기물") }
+    var friday by remember { mutableStateOf("대형 폐기물") }
+    var saturday by remember { mutableStateOf("대형 폐기물") }
+    var sunday by remember { mutableStateOf("대형 폐기물") }
+
     Column(
         modifier = Modifier.fillMaxWidth().padding(innerPadding).padding(16.dp),
-        verticalArrangement = Arrangement.spacedBy(29.dp, Alignment.Top),
+        verticalArrangement = Arrangement.spacedBy(29.dp),
         horizontalAlignment = Alignment.Start,
     ) {
-        Column (
-            modifier = Modifier .border(width = 1.dp, color =Mint, shape = RoundedCornerShape(size = 10.dp))
-            .fillMaxWidth()
-            .padding(7.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterVertically),
+
+        // Progress Bar
+        Column(
+            modifier = Modifier
+                .border(width = 1.dp, color = Mint, shape = RoundedCornerShape(10.dp))
+                .fillMaxWidth()
+                .padding(7.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Text(
@@ -126,13 +231,11 @@ fun RecordContent(innerPadding: PaddingValues) {
                     .padding(8.dp)
                     .fillMaxWidth(),
                 text = "Progress Bar",
-                style = androidx.compose.ui.text.TextStyle(
-                    fontSize = 24.sp,
-                    lineHeight = 33.6.sp,
-                    fontWeight = FontWeight(700),
-                    color = Color(0xFF000000),
-                )
+                fontSize = 24.sp,
+                fontWeight = FontWeight.Bold,
+                color = Color.Black
             )
+
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -141,54 +244,51 @@ fun RecordContent(innerPadding: PaddingValues) {
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically,
             ) {
+
+                // 퍼센트 박스
                 Row(
                     modifier = Modifier
-                        .width(42.dp)
+                        .width(50.dp)
                         .height(42.dp)
-                        .background(color = NeonBlue, shape = RoundedCornerShape(size = 10.dp))
-                        .padding(start = 3.dp, top = 6.dp, end = 3.dp, bottom = 6.dp),
-                    horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterHorizontally),
+                        .background(color = NeonBlue, shape = RoundedCornerShape(10.dp))
+                        .padding(3.dp),
+                    horizontalArrangement = Arrangement.Center,
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
                     Text(
-                        text = "67%",
-                        style = androidx.compose.ui.text.TextStyle(
-                            fontSize = 16.sp,
-                            lineHeight = 22.4.sp,
-                            fontWeight = FontWeight(400),
-                            color = Color(0xFFFFFFFF),
-                        )
+                        text = "${progressPercent}%",
+                        fontSize = 16.sp,
+                        color = Color.White
                     )
-
                 }
+
+                // 바 전체 틀
                 Column(
                     modifier = Modifier
-                        .border(width = 2.dp, color = Color(0xFF79ECF4), shape = RoundedCornerShape(size = 13.125.dp))
-                    .width(285.dp)
-                    .height(42.dp)
-                    .background(color = Color(0xFFFFFFFF), shape = RoundedCornerShape(size = 13.125.dp))
-                    .padding(start = 4.dp, top = 4.dp, end = 4.dp, bottom = 4.dp),
-                    verticalArrangement = Arrangement.spacedBy(8.dp, Alignment.Top),
+                        .border(width = 2.dp, color = Color(0xFF79ECF4), shape = RoundedCornerShape(13.125.dp))
+                        .width(285.dp)
+                        .height(42.dp)
+                        .background(color = Color.White, shape = RoundedCornerShape(13.125.dp))
+                        .padding(4.dp),
+                    verticalArrangement = Arrangement.Top,
                     horizontalAlignment = Alignment.Start,
                 ) {
+                    // 파란 progress bar
                     Row(
                         modifier = Modifier
-                            .width(210.dp)
+                            .width((285.dp * progressFraction))
                             .height(34.dp)
-                            .background(color = NeonBlue, shape = RoundedCornerShape(size = 10.dp))
-                            .padding(start = 8.dp, top = 8.dp, end = 8.dp, bottom = 8.dp),
-                    horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.Start),
-                    verticalAlignment = Alignment.Top,
-                ) {
-                }
+                            .background(color = NeonBlue, shape = RoundedCornerShape(10.dp))
+                            .padding(8.dp),
+                    ) { }
                 }
             }
         }
 
         Column(
             modifier = Modifier
-                .border(width = 1.dp, color = Mint, shape = RoundedCornerShape(size = 10.dp)),
-            verticalArrangement = Arrangement.spacedBy(3.dp, Alignment.CenterVertically),
+                .border(width = 1.dp, color = Mint, shape = RoundedCornerShape(10.dp)),
+            verticalArrangement = Arrangement.spacedBy(3.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Column(
@@ -205,54 +305,38 @@ fun RecordContent(innerPadding: PaddingValues) {
                         )
                     }
                     .padding(top = 5.dp, bottom = 5.dp),
-                verticalArrangement = Arrangement.spacedBy(12.dp, Alignment.Top),
+                verticalArrangement = Arrangement.spacedBy(12.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
-                Text(
-                    text = "쓰레기 버리는 날",
-                    style = androidx.compose.ui.text.TextStyle(
-                        fontSize = 24.sp,
-                        lineHeight = 33.6.sp,
-                        fontWeight = FontWeight(700),
-                        color = Color(0xFF000000),
-                    )
-                )
-                Text(
-                    text = "우리 동네 쓰레기 수거일을 등록해보세요",
-                    style = androidx.compose.ui.text.TextStyle(
-                        fontSize = 16.sp,
-                        lineHeight = 22.4.sp,
-                        fontWeight = FontWeight(400),
-                        color = Color(0xFF656565),
-                    )
-                )
+                Text("쓰레기 버리는 날", fontSize = 24.sp, fontWeight = FontWeight.Bold)
+                Text("우리 동네 쓰레기 수거일을 등록해보세요", fontSize = 16.sp, color = Color(0xFF656565))
             }
+
             Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(start = 12.dp, top = 7.dp, end = 12.dp, bottom = 7.dp),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.Top,
+                modifier = Modifier.fillMaxWidth().padding(12.dp),
+                horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                GarbageDayItem("월", "재활용 수거일")
-                GarbageDayItem("화", "일반 쓰레기")
-                GarbageDayItem("수", "음식물 수거일")
-                GarbageDayItem("목", "대형 폐기물")
-                GarbageDayItem("금", "대형 폐기물")
-                GarbageDayItem("토", "대형 폐기물")
-                GarbageDayItem("일", "대형 폐기물")
-
+                GarbageDayItem("월", monday) { monday = it }
+                GarbageDayItem("화", tuesday) { tuesday = it }
+                GarbageDayItem("수", wednesday) { wednesday = it }
+                GarbageDayItem("목", thursday) { thursday = it }
+                GarbageDayItem("금", friday) { friday = it }
+                GarbageDayItem("토", saturday) { saturday = it }
+                GarbageDayItem("일", sunday) { sunday = it }
             }
         }
+
+        // 목표 + 체크박스
         Column(
             modifier = Modifier
-                .border(width = 1.dp, color = Mint, shape = RoundedCornerShape(size = 10.dp)),
-            verticalArrangement = Arrangement.spacedBy(3.dp, Alignment.CenterVertically),
+                .border(width = 1.dp, color = Mint, shape = RoundedCornerShape(10.dp)),
+            verticalArrangement = Arrangement.spacedBy(3.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
+                    .clickable { navController.navigate("challenge") }
                     .drawBehind {
                         val strokeWidth = 2.dp.toPx()
                         val y = size.height - strokeWidth / 2
@@ -264,66 +348,32 @@ fun RecordContent(innerPadding: PaddingValues) {
                         )
                     }
                     .padding(top = 5.dp, bottom = 5.dp),
-                verticalArrangement = Arrangement.spacedBy(12.dp, Alignment.Top),
+                verticalArrangement = Arrangement.spacedBy(12.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
-                Text(
-                    text = "나만의 목표",
-                    style = androidx.compose.ui.text.TextStyle(
-                        fontSize = 24.sp,
-                        lineHeight = 33.6.sp,
-                        fontWeight = FontWeight(700),
-                        color = Color(0xFF000000),
-                    )
-                )
-                Text(
-                    text = "나만의 목표 등록 및 달성 기록",
-                    style = androidx.compose.ui.text.TextStyle(
-                        fontSize = 16.sp,
-                        lineHeight = 22.4.sp,
-                        fontWeight = FontWeight(400),
-                        color = Color(0xFF656565),
-                    )
-                )
+                Text("나만의 목표", fontSize = 24.sp, fontWeight = FontWeight.Bold)
+                Text("나만의 목표 등록 및 달성 기록", fontSize = 16.sp, color = Color(0xFF656565))
             }
+
             Column(
                 modifier = Modifier
-
-                    .background(color = Color(0xEBFFFFFF), shape = RoundedCornerShape(size = 15.dp))
-                    .padding(start = 10.dp, top = 14.dp, end = 10.dp, bottom = 14.dp),
-                verticalArrangement = Arrangement.spacedBy(0.dp, Alignment.Top),
+                    .background(color = Color(0xEBFFFFFF), shape = RoundedCornerShape(15.dp))
+                    .padding(10.dp),
+                verticalArrangement = Arrangement.Top,
                 horizontalAlignment = Alignment.Start,
             ) {
 
-                GoalItem(
-                    text = "배달음식 안시켜먹기",
-                    checked = false,
-                    onCheckedChange = { /* TODO */ }
-                )
-                GoalItem(
-                    text = "배달음식 안시켜먹기",
-                    checked = false,
-                    onCheckedChange = { /* TODO */ }
-                )
+                achievements.forEach { item ->
+                    RecordGoalItem(
+                        text = item.title,
+                        checked = item.isDone,
+                        onCheckedChange = { checked ->
+                            viewModel.markDone(item.id, checked)
+                        }
+                    )
+                }
 
             }
         }
     }
 }
-
-/*
-@Preview(showBackground = true)
-@Composable
-fun RecordPreview() {
-    val navController = rememberNavController()
-
-    Scaffold(
-        topBar = { TopBar() },     // 실제 TopBar
-        bottomBar = { BottomBar() } // 실제 BottomBar
-    ) { innerPadding ->
-        RecordContent(innerPadding)
-    }
-}
-
- */
-*/
