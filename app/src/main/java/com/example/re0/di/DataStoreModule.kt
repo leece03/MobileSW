@@ -5,6 +5,7 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.PreferenceDataStoreFactory
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
+import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStoreFile
 import dagger.Module
@@ -30,5 +31,6 @@ object DataStoreModule {
 object QuizPreferences {
     val KEY_LAST_DATE = stringPreferencesKey("last_quiz_date")
     val KEY_SELECTED = booleanPreferencesKey("selected_state")
+    val KEY_TODAY_INDEX = intPreferencesKey("today_index")
 
 }
