@@ -27,10 +27,11 @@ import com.example.re0.components.NewsCard
 import com.example.re0.components.QuizScreen
 import com.example.re0.model.NewsItem
 import com.example.re0.ui.theme.Mint
+import com.example.re0.viewModel.QuizViewModel
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun HomeScreen( navController: NavController, backStackEntry: NavBackStackEntry) {
+fun HomeScreen( navController: NavController, viewModel: QuizViewModel,backStackEntry: NavBackStackEntry) {
     val newsList = listOf(
         NewsItem(
             title = "폐플라스틱 재활용, '화학적 분해' 혁신 기술 도입",
@@ -75,7 +76,9 @@ fun HomeScreen( navController: NavController, backStackEntry: NavBackStackEntry)
     ) { innerPadding ->
         Column(
             modifier = Modifier.fillMaxSize()
-                .padding(innerPadding),
+                .padding(innerPadding)
+
+            ,
             horizontalAlignment = Alignment.CenterHorizontally,
 
             ) {
@@ -109,7 +112,7 @@ fun HomeScreen( navController: NavController, backStackEntry: NavBackStackEntry)
                     Text(text="OX 퀴즈", color = Color.White, fontSize = 23.sp, fontWeight = FontWeight.Bold )
                 },
                 bottomContent = {
-                    QuizScreen()
+                    QuizScreen(viewModel)
                 }
             )
 
