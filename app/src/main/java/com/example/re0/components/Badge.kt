@@ -39,7 +39,7 @@ fun BadgeItem(achievement: Achievement) {
             modifier = Modifier
                 .size(35.dp)
                 .clip(CircleShape)
-                .background(Mint),
+                .background(Color.White),
             contentScale = ContentScale.Crop
         )
         Text(text =achievement.title, fontSize = 10.sp)
@@ -86,46 +86,3 @@ fun MyBadge( achievements: List<Achievement>) {
         }
     )
 }
-/*
-@Preview(showBackground = true)
-@Composable
-fun MyPBadgePreview() {
-    MyBadge(
-        sampleAchievements
-    )
-}
-val sampleAchievements = listOf(
-    Achievement(
-        title = "First Step",
-        iconUrl = R.drawable.rectangle1_2,
-    ),
-    Achievement(
-        title = "First Step2",
-        iconUrl = R.drawable.rectangle1_1,
-    ),
-    Achievement(
-        title = "First Step3",
-        iconUrl = R.drawable.rectangle1_2,
-    ),
-    Achievement(
-        title = "First Step4",
-        iconUrl = R.drawable.rectangle1_1,
-    ),
-    Achievement(
-        title = "First Step",
-        iconUrl = R.drawable.rectangle1_2,
-    ),
-    Achievement(
-        title = "First Step2",
-        iconUrl = R.drawable.rectangle1_1,
-    ),
-    Achievement(
-        title = "First Step3",
-        iconUrl = R.drawable.rectangle1_2,
-    ),
-    Achievement(
-        title = "First Step4",
-        iconUrl = R.drawable.rectangle1_1,
-    )
-)
-*/
