@@ -18,13 +18,13 @@ fun FilterButton(
     selected: Boolean,
     onClick: () -> Unit
 ) {
-    val backgroundColor = if (selected) Color.White else Mint
-    val textColor = if (selected) Mint else Color.White
+    val backgroundColor = if (selected) Mint else  Color.White
+    val textColor = if (selected) Color.White else Mint
 
     Box(
         modifier = Modifier
             .padding(4.dp)
-            .background(backgroundColor, RoundedCornerShape(12.dp))
+            .background(backgroundColor, RoundedCornerShape(20.dp))
             .clickable { onClick() }
             .padding(horizontal = 16.dp, vertical = 8.dp)
     ) {
