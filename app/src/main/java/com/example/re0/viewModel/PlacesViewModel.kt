@@ -22,8 +22,8 @@ class PlacesViewModel @Inject constructor(
     val places: StateFlow<List<Place>> = _places
 
     init {
-        loadDummyPlaces()
-        //loadPlaces()
+        //loadDummyPlaces()
+        loadPlaces()
     }
     private val _filteredPlaces = MutableStateFlow<List<Place>>(emptyList())
     val filteredPlaces: StateFlow<List<Place>> = _filteredPlaces
