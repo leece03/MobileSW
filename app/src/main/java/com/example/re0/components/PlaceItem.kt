@@ -14,12 +14,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.re0.model.Place
 import com.example.re0.model.PlaceType
+import com.example.re0.ui.theme.SkyBlue
 
 @Composable
 fun PlaceItem(place: Place) {
@@ -28,7 +28,7 @@ fun PlaceItem(place: Place) {
             .fillMaxWidth()
             .padding(5.dp)
             .clip(RoundedCornerShape(12.dp))
-            .background(Color.LightGray)
+            .background(SkyBlue)
 
     ) {
         Row (modifier = Modifier
