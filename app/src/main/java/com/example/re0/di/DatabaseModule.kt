@@ -47,61 +47,61 @@ object DatabaseModule {
                             val achievements = listOf(
                                 Achievement(
                                     title = "재활용마스터",
-                                    iconUrl = R.drawable.rectangle1_2,
+                                    iconUrl = R.drawable.badge1,
                                     date = "2025.11.21",
                                     isDone = false
                                 ),
                                 Achievement(
                                     title = "분리수거천재",
-                                    iconUrl = R.drawable.rectangle1_1,
+                                    iconUrl = R.drawable.badge2,
                                     date = "2025.11.22",
                                     isDone = false
                                 ),
                                 Achievement(
                                     title = "텀블러킹",
-                                    iconUrl = R.drawable.rectangle1_2,
+                                    iconUrl = R.drawable.badge3,
                                     date = "2025.11.24",
                                     isDone = false
                                 ),
                                 Achievement(
                                     title = "분리수거천재",
-                                    iconUrl = R.drawable.rectangle1_1,
+                                    iconUrl = R.drawable.badge2,
                                     date = "2025.11.24",
                                     isDone = false
                                 ),
                                 Achievement(
                                     title = "텀블러킹",
-                                    iconUrl = R.drawable.rectangle1_2,
+                                    iconUrl = R.drawable.badge1,
                                     date = "2025.11.20",
                                     isDone = false
                                 ),
                                 Achievement(
                                     title = "재활용마스터",
-                                    iconUrl = R.drawable.rectangle1_1,
+                                    iconUrl = R.drawable.badge3,
                                     date = "2025.11.19",
                                     isDone = false
                                 ),
                                 Achievement(
                                     title = "재활용마스터",
-                                    iconUrl = R.drawable.rectangle1_2,
+                                    iconUrl = R.drawable.badge2,
                                     date = "2025.11.19",
                                     isDone = false
                                 ),
                                 Achievement(
                                     title = "분리수거천재",
-                                    iconUrl = R.drawable.rectangle1_1,
+                                    iconUrl = R.drawable.badge1,
                                     date = "2025.11.20",
                                     isDone = false
                                 ),
                                 Achievement(
                                     title = "분리수거천재",
-                                    iconUrl = R.drawable.rectangle1_1,
+                                    iconUrl = R.drawable.badge2,
                                     date = "2025.11.20",
                                     isDone = false
                                 ),
                                 Achievement(
                                     title = "분리수거천재",
-                                    iconUrl = R.drawable.rectangle1_1,
+                                    iconUrl = R.drawable.badge1,
                                     date = "2025.11.20",
                                     isDone = false
                                 )
