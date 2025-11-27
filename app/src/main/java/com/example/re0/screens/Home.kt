@@ -122,6 +122,8 @@ fun HomeScreen( navController: NavController, viewModel: QuizViewModel,backStack
             CardTemplate(
                 topColor=White,
                 bottomColor=Color.White,
+                borderLineColor = Mint,
+                dividerLineColor = Color.White,
                 topContent = {
                     Row(modifier = Modifier.fillMaxWidth()
                         .padding(horizontal =5.dp)                        ,

@@ -24,6 +24,7 @@ fun CardTemplate(
     topColor: Color= Mint,
     bottomColor: Color=Color.White,
     borderLineColor:Color= topColor,
+    dividerLineColor:Color= borderLineColor,
     topContent: @Composable () -> Unit = {},
     bottomContent: @Composable () -> Unit = {}
 
@@ -46,7 +47,7 @@ fun CardTemplate(
                 .background(color = topColor)
                 .border(
                     width = 2.dp,
-                    color = borderLineColor,
+                    color = dividerLineColor,
                     //shape = RoundedCornerShape(12.dp)
                 )
                 .padding(10.dp),
