@@ -16,6 +16,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Color.Companion.White
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -85,8 +86,9 @@ fun HomeScreen( navController: NavController, viewModel: QuizViewModel,backStack
             CardTemplate(
                 topColor=Mint,
                 bottomColor=Color.White,
+                borderLineColor = Mint,
                 topContent = {
-                    Text(text="오늘의 제로웨이스트 TIP", color = Color.White, fontSize = 23.sp, fontWeight = FontWeight.Bold )
+                    Text(text="오늘의 제로웨이스트 TIP", color = Color.White, fontSize = 28.sp, fontWeight = FontWeight.Bold )
                 },
                 bottomContent = {
                     Text(text="비누 끝 조각 합치기 프로젝트", color = Color.Black, fontSize = 18.sp, fontWeight = FontWeight.Bold )
@@ -95,10 +97,10 @@ fun HomeScreen( navController: NavController, viewModel: QuizViewModel,backStack
             )
 
             CardTemplate(
-                topColor=Mint,
+                topColor=White,
                 bottomColor=Color.White,
                 topContent = {
-                    Text(text="오늘의 다짐", color = Color.White, fontSize = 23.sp, fontWeight = FontWeight.Bold )
+                    Text(text="오늘의 다짐", color =Mint,  fontSize = 30.sp, fontWeight = FontWeight.Bold )
                 },
                 bottomContent = {
                     Text("종이 영수증 받지 않기!", color = Color.Black, fontSize = 20.sp, fontWeight = FontWeight.Bold )
@@ -109,7 +111,7 @@ fun HomeScreen( navController: NavController, viewModel: QuizViewModel,backStack
                 topColor=Mint,
                 bottomColor=Color.White,
                 topContent = {
-                    Text(text="OX 퀴즈", color = Color.White, fontSize = 23.sp, fontWeight = FontWeight.Bold )
+                    Text(text="OX 퀴즈", color = Color.White, fontSize = 30.sp, fontWeight = FontWeight.Bold )
                 },
                 bottomContent = {
                     QuizScreen(viewModel)
@@ -117,13 +119,23 @@ fun HomeScreen( navController: NavController, viewModel: QuizViewModel,backStack
             )
 
             CardTemplate(
-                topColor=Mint,
+                topColor=White,
                 bottomColor=Color.White,
                 topContent = {
-                    Text(text="News", color = Color.White, fontSize = 23.sp, fontWeight = FontWeight.Bold )
+                    Row(modifier = Modifier.fillMaxWidth()
+                        .padding(horizontal =5.dp)                        ,
+                        horizontalArrangement = Arrangement.Start
+                    ){
+                    Text(text="News", color = Color.Black, fontSize = 30.sp, fontWeight = FontWeight.Bold )
+                        }
                 },
                 bottomContent = {
-                    Text("재활용 관련 뉴스 ", color = Color.Black, fontSize = 15.sp)
+                    Row(modifier = Modifier.fillMaxWidth()
+                        .padding(horizontal =5.dp)                        ,
+                        horizontalArrangement = Arrangement.Start
+                    ) {
+                        Text("재활용 관련 뉴스 ", color = Color.Black, fontSize = 25.sp)
+                    }
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()

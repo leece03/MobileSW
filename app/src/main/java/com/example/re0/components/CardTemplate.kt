@@ -23,8 +23,10 @@ fun CardTemplate(
     modifier: Modifier = Modifier,
     topColor: Color= Mint,
     bottomColor: Color=Color.White,
+    borderLineColor:Color= Mint,
     topContent: @Composable () -> Unit = {},
     bottomContent: @Composable () -> Unit = {}
+
 ) {
     Column(
         modifier = modifier
@@ -33,7 +35,7 @@ fun CardTemplate(
             .clip(RoundedCornerShape(12.dp))
             .border(
                 width = 2.dp,
-                color = topColor,
+                color = borderLineColor,
                 shape = RoundedCornerShape(12.dp)
             )
     ) {
@@ -42,9 +44,15 @@ fun CardTemplate(
                 .fillMaxWidth()
                 //.height(50.dp)
                 .background(color = topColor)
+                .border(
+                    width = 2.dp,
+                    color = borderLineColor,
+                    //shape = RoundedCornerShape(12.dp)
+                )
                 .padding(10.dp),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
+
         ) {
             //Spacer(modifier = Modifier.height(10.dp))
             topContent()
