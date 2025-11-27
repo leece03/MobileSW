@@ -23,7 +23,7 @@ fun CardTemplate(
     modifier: Modifier = Modifier,
     topColor: Color= Mint,
     bottomColor: Color=Color.White,
-    borderLineColor:Color= Mint,
+    borderLineColor:Color= topColor,
     topContent: @Composable () -> Unit = {},
     bottomContent: @Composable () -> Unit = {}
 

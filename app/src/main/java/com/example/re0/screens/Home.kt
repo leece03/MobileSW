@@ -91,19 +91,20 @@ fun HomeScreen( navController: NavController, viewModel: QuizViewModel,backStack
                     Text(text="오늘의 제로웨이스트 TIP", color = Color.White, fontSize = 28.sp, fontWeight = FontWeight.Bold )
                 },
                 bottomContent = {
-                    Text(text="비누 끝 조각 합치기 프로젝트", color = Color.Black, fontSize = 18.sp, fontWeight = FontWeight.Bold )
-                    Text("욕실에서 쓰다 남은 비누 조각들 따뜻한 물에 잠깐 녹인 다음  눌러 담으면 새 비누 완성 \uD83E\uDDFC", color = Color.Black)
+                    Text(text="비누 끝 조각 합치기 프로젝트", color = Color.Black, fontSize = 25.sp, fontWeight = FontWeight.Bold )
+                    Text("욕실에서 쓰다 남은 비누 조각들 따뜻한 물에 잠깐 녹인 다음  눌러 담으면 새 비누 완성 \uD83E\uDDFC",fontSize = 18.sp, color = Color.Black)
                 }
             )
 
             CardTemplate(
                 topColor=White,
                 bottomColor=Color.White,
+                borderLineColor = Mint,
                 topContent = {
                     Text(text="오늘의 다짐", color =Mint,  fontSize = 30.sp, fontWeight = FontWeight.Bold )
                 },
                 bottomContent = {
-                    Text("종이 영수증 받지 않기!", color = Color.Black, fontSize = 20.sp, fontWeight = FontWeight.Bold )
+                    Text("종이 영수증 받지 않기!", color = Color.Black, fontSize = 25.sp, fontWeight = FontWeight.Bold )
                 }
             )
 
