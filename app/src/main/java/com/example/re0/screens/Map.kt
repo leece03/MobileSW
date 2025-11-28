@@ -11,6 +11,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -24,6 +25,7 @@ import com.example.re0.components.PlaceItem
 import com.example.re0.model.PlaceType
 import com.example.re0.ui.theme.Mint
 import com.example.re0.viewModel.PlacesViewModel
+import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.GoogleMap
@@ -31,11 +33,14 @@ import com.google.maps.android.compose.Marker
 import com.google.maps.android.compose.MarkerState
 import com.google.maps.android.compose.rememberCameraPositionState
 
+
 @Composable
 fun MapScreen(navController: NavController, viewModel: PlacesViewModel = hiltViewModel(), backStackEntry: NavBackStackEntry){
     val places by viewModel.places.collectAsState()
     val filteredPlaces by viewModel.filteredPlaces.collectAsState()
-
+    LaunchedEffect(Unit) {
+        viewModel.applyFilter(PlaceType.ZERO_WASTE)
+    }
     val placeList = if (filteredPlaces.isNotEmpty()) {
         filteredPlaces
     } else {
@@ -52,6 +57,11 @@ fun MapScreen(navController: NavController, viewModel: PlacesViewModel = hiltVie
     val cameraPositionState = rememberCameraPositionState {
         position = CameraPosition.fromLatLngZoom(seoul, 12f)
     }
+    val cameraPosition = cameraPositionState.position.target
+    LaunchedEffect(cameraPosition) {
+        viewModel.updateDistances(cameraPosition.latitude, cameraPosition.longitude)
+    }
+
     Scaffold (
         topBar = { TopBar() },
         bottomBar ={ BottomBar(navController)}
@@ -73,11 +83,21 @@ fun MapScreen(navController: NavController, viewModel: PlacesViewModel = hiltVie
                     cameraPositionState = cameraPositionState
                 ) {
                     placeList.forEach { item ->
+                        val markerIcon = if (item.type == PlaceType.ZERO_WASTE) {
+                            BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)
+                        } else if(item.type == PlaceType.TUMBLER_DISCOUNT){
+                            BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)
+                        }
+                        else{
+                            BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW)
+                        }
+
                         Marker(
                             state = MarkerState(
-                                position = LatLng(item.lat, item.lng)
+                                position = LatLng(item.lat, item.lng),
                             ),
-                            title = item.name
+                            title = item.name,
+                            icon = markerIcon
                         )
                     }
                 }
@@ -110,33 +130,3 @@ fun MapScreen(navController: NavController, viewModel: PlacesViewModel = hiltVie
         }
     }
 }
-/*
-@Preview(showBackground = true)
-@Composable
-fun MapScreenPreview() {
-    MapScreen()
-}
-@Composable
-fun FilterButton(
-    text: String,
-    selected: Boolean,
-    onClick: () -> Unit
-) {
-    val backgroundColor = if (selected) Color.White else Mint
-    val textColor = if (selected) Mint else Color.White
-
-    Box(
-        modifier = Modifier
-            .padding(4.dp)
-            .background(backgroundColor, RoundedCornerShape(12.dp))
-            .clickable { onClick() }
-            .padding(horizontal = 16.dp, vertical = 8.dp)
-    ) {
-        Text(
-            text = text,
-            color = textColor
-        )
-    }
-}
-
- */

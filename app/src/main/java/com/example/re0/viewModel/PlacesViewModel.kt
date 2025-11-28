@@ -9,7 +9,31 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import javax.inject.Inject
+import kotlin.math.atan2
+import kotlin.math.cos
+import kotlin.math.pow
+import kotlin.math.sin
+import kotlin.math.sqrt
 
+fun calculateDistance(
+    lat1: Double, lng1: Double,
+    lat2: Double, lng2: Double
+): String  {
+    val R = 6371e3 // 지구 반지름 (미터)
+
+    val dLat = Math.toRadians(lat2 - lat1)
+    val dLng = Math.toRadians(lng2 - lng1)
+
+    val a = sin(dLat / 2).pow(2.0) +
+            cos(Math.toRadians(lat1)) * cos(Math.toRadians(lat2)) *
+            sin(dLng / 2).pow(2.0)
+
+    val c = 2 * atan2(sqrt(a), sqrt(1 - a))
+
+    val distanceMeters= R * c // 결과는 미터 단위
+    val distanceKm = distanceMeters / 1000
+    return String.format("%.1f km", distanceKm)
+}
 @HiltViewModel
 class PlacesViewModel @Inject constructor(
     private val repository: PlacesRepository,
@@ -27,12 +51,18 @@ class PlacesViewModel @Inject constructor(
     }
     private val _filteredPlaces = MutableStateFlow<List<Place>>(emptyList())
     val filteredPlaces: StateFlow<List<Place>> = _filteredPlaces
-    private val _selectedFilter = MutableStateFlow<PlaceType?>(null)
+    private val _selectedFilter = MutableStateFlow<PlaceType?>(PlaceType.ZERO_WASTE)
     val selectedFilter: StateFlow<PlaceType?> = _selectedFilter
     fun applyFilter(type: PlaceType) {
         _selectedFilter.value = type
         val list = _places.value.filter { it.type == type }
         _filteredPlaces.value = list
+    }
+    fun updateDistances(lat: Double, lng: Double) {
+        val updated = places.value.map { place ->
+            place.copy(length = calculateDistance(lat, lng, place.lat, place.lng))
+        }
+        _places.value = updated
     }
     private fun loadPlaces() {
         db.collection("places")
@@ -47,41 +77,5 @@ class PlacesViewModel @Inject constructor(
                 it.printStackTrace()
             }
     }
-    private fun loadDummyPlaces() {
-        _places.value = listOf(
-            Place(
-                name = "서울 제로웨이스트샵",
-                address = "서울시 마포구",
-                description = "친환경 용품 판매",
-                lat = 37.5665,
-                lng = 126.9780,
-                type = PlaceType.ZERO_WASTE
-            ),
-            Place(
-                name = "스타벅스 텀블러 할인",
-                address = "서울시 종로구",
-                description = "텀블러 지참 시 할인",
-                lat = 37.56,
-                lng = 126.99,
-                type = PlaceType.TUMBLER_DISCOUNT
-            ),
-            Place(
-                name = "홍대 분리수거장",
-                address = "서울시 홍대입구",
-                description = "일반/플라스틱/캔 구분 가능",
-                lat = 37.55,
-                lng = 126.92,
-                type = PlaceType.RECYCLE_BIN
-            )
-            ,
-            Place(
-                name = "홍대 분리수거장",
-                address = "서울시 홍대입구",
-                description = "일반/플라스틱/캔 구분 가능",
-                lat = 37.55,
-                lng = 126.92,
-                type = PlaceType.RECYCLE_BIN
-            )
-        )
-    }
+
 }
