@@ -15,6 +15,8 @@ import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -34,10 +36,12 @@ fun QuizScreen(
 ) {
     val selected = viewModel.selected
     val todayQuiz = viewModel.getTodayQuiz()   // todayIndex 기반
+    val isCorrect by viewModel.isCorrect.collectAsState()
 
     DailyQuizContent(
         quiz = todayQuiz,
         selected = selected,
+        isCorrect=isCorrect,
         onAnswerSelected = { answer ->
             viewModel.onAnswerSelected(answer)
         }
@@ -48,8 +52,10 @@ fun QuizScreen(
 fun DailyQuizContent(
     quiz: QuizItem,
     selected: Boolean,
+    isCorrect: Boolean,
     onAnswerSelected: (Boolean) -> Unit
 ) {
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -66,7 +72,7 @@ fun DailyQuizContent(
 
 
         if (selected) {
-            val feedback = if (quiz.correctAnswer) "정답입니다!" else "오답입니다!"
+            val feedback = if (isCorrect) "정답입니다!" else "오답입니다!"
             Text(
                 feedback,
                 color = Color.Blue,

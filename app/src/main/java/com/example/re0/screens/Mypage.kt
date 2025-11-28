@@ -32,8 +32,9 @@ fun MypageScreen(navController: NavController,
             horizontalAlignment = Alignment.CenterHorizontally,) {
             val uiState = viewModel.uiState
             val achievementsState=viewModel.achievementsState
+            val badgeCount = viewModel.badgeCount()
             MyProfile(uiState = uiState,achievements = achievementsState)
-            MyBadge(achievements = achievementsState)
+            MyBadge(achievements = achievementsState,badgeCount)
             AchievementsGraph(achievements = achievementsState)
         }
     }

@@ -9,7 +9,7 @@ import com.example.re0.model.Profile
 
 @Database(
     entities = [Achievement::class, Profile::class],
-    version = 5,
+    version = 6,
     exportSchema = false
 )
 @TypeConverters(Converters::class)

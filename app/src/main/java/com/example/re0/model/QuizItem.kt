@@ -6,5 +6,6 @@ data class QuizItem(
     @PrimaryKey(autoGenerate = true)
     val id: Int=0,
     val question: String,
-    val correctAnswer: Boolean
+    val correctAnswer: Boolean,
+    //val selectedAnswer: Boolean? = null
 )
