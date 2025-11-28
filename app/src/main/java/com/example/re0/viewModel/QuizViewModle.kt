@@ -11,6 +11,9 @@ import com.example.re0.model.QuizItem
 import com.example.re0.repository.QuizRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import jakarta.inject.Inject
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 import java.time.LocalDate
@@ -33,6 +36,9 @@ class QuizViewModel @Inject constructor(
 
     var selected by mutableStateOf(false)
         private set
+
+    private val _isCorrect = MutableStateFlow<Boolean>(true)
+    var isCorrect: StateFlow<Boolean> = _isCorrect.asStateFlow()
 
     init {
         observeSavedState()
@@ -76,10 +82,13 @@ class QuizViewModel @Inject constructor(
 
         // 오늘 문제 정답 체크 (필요시 Repository에 저장 가능)
         val todayQuiz = quizList[todayIndex]
-        val isCorrect = todayQuiz.correctAnswer == answer
+        val correct = todayQuiz.correctAnswer == answer
 
-        // "하루 1문제" 구조에서는 큐를 회전시키지 않음
-        // nextIndex 이동은 날짜가 바뀔 때만 처리됨
+        viewModelScope.launch {
+            _isCorrect.value = correct   //이렇게 갱신해야 컴포저블에서 관찰 가능
+            repository.updateSelectedState(true)
+        }
+
 
         viewModelScope.launch {
             repository.updateSelectedState(true)
