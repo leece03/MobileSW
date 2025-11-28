@@ -10,6 +10,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.example.re0.ui.theme.Mint
 
 @Composable
@@ -30,7 +31,8 @@ fun FilterButton(
     ) {
         Text(
             text = text,
-            color = textColor
+            color = textColor,
+            fontSize = 23.sp
         )
     }
 }

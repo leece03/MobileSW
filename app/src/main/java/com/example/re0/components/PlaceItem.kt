@@ -38,15 +38,15 @@ fun PlaceItem(place: Place) {
             horizontalArrangement = Arrangement.SpaceBetween
         ){
             Column{
-                Text(place.name, fontSize = 15.sp)
-                Text(place.address, fontSize = 10.sp)
+                Text(place.name, fontSize = 25.sp)
+                Text(place.address, fontSize = 18.sp)
             }
             Spacer(modifier = Modifier.width(40.dp))
-            Text("거리: 5.5km", fontSize = 15.sp)
+            Text("거리:"+ place.length , fontSize = 23.sp)
         }
-
     }
 }
+
 @Preview(showBackground = true)
 @Composable
 fun PlaceListPreview() {
