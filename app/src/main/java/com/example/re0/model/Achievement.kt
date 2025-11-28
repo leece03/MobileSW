@@ -11,5 +11,7 @@ data class Achievement(
     val description: String? = null,
     val date: String? = null,
     val iconUrl: Int,
-    val isDone : Boolean
+    val isDone : Boolean,
+    var isBadge: Boolean = false
+
 )

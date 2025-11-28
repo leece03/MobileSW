@@ -3,7 +3,6 @@ package com.example.re0.components
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
@@ -47,7 +46,7 @@ fun BadgeItem(achievement: Achievement) {
 }
 
 @Composable
-fun MyBadge( achievements: List<Achievement>) {
+fun MyBadge( achievements: List<Achievement>,badgeCount:Int) {
     CardTemplate(
         topColor = Mint,
         bottomColor = Mint,
@@ -58,7 +57,7 @@ fun MyBadge( achievements: List<Achievement>) {
                 fontSize = 23.sp,
                 fontWeight = FontWeight.Bold
             )
-            Text("획득 목록 : ${achievements.size}", fontSize = 14.sp)
+            Text("획득 목록 : ${badgeCount}", fontSize = 14.sp)
             HorizontalDivider(
                 thickness = 1.dp,
                 color = Color.LightGray
@@ -76,10 +75,8 @@ fun MyBadge( achievements: List<Achievement>) {
                         ,
                     horizontalArrangement = Arrangement.SpaceBetween
                     ) {
-                    achievements.forEach { achievement ->
-                        Box{//(modifier = Modifier.padding(horizontal = 2.dp)) {
-                            BadgeItem(achievement)
-                        }
+                    achievements.filter { it.isBadge }.forEach { achievement ->
+                        BadgeItem(achievement)
                     }
                 }
             }

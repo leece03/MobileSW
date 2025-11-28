@@ -15,61 +15,63 @@ import jakarta.inject.Inject
 import kotlinx.coroutines.launch
 
 @HiltViewModel
-open class ProfileViewModel @Inject constructor(
+class ProfileViewModel @Inject constructor(
     private val repository: MypageRepository
 ) : ViewModel() {
 
-    var uiState by mutableStateOf(Profile(
-        imageUrl = R.drawable.rectangle1_2,
-        name = "",
-        email = "",
-    )
+    var uiState by mutableStateOf(
+        Profile(
+            imageUrl = R.drawable.rectangle1_2,
+            name = "",
+            email = ""
+        )
     )
         private set
 
-    var profile by mutableStateOf<Profile?>(null)
-        private set
     var achievementsState by mutableStateOf<List<Achievement>>(emptyList())
         private set
 
     init {
         loadProfile()
+        loadAchievements() // 독립적으로 동작
+    }
+
+    fun badgeCount(): Int = achievementsState.count { it.isBadge }
+
+    private fun loadAchievements() {
+        viewModelScope.launch {
+            achievementsState = repository.getAllAchievement()
+            Log.d("ProfileVM", "allAchievements = ${repository.getAllAchievement()}")
+
+        }
     }
 
     private fun loadProfile() {
         viewModelScope.launch {
             var loaded = repository.getProfile()
             if (loaded == null) {
-                repository.insertProfile(Profile(
-                    imageUrl =  R.drawable.rectangle1_2,
-                    name = "홍길동",
-                    email = "hong@test.com",
+                repository.insertProfile(
+                    Profile(
+                        imageUrl = R.drawable.rectangle1_2,
+                        name = "홍길동",
+                        email = "hong@test.com"
                     )
                 )
                 loaded = repository.getProfile()
             }
-            val achievements = repository.getAllAchievement()
-            Log.d("ProfileVM", "Loaded profile = $loaded")
-            Log.d("ProfileVM", "Loaded achievements = $achievements")
-            loaded?.let { profileData ->
-                uiState = uiState.copy(
-                    imageUrl = profileData.imageUrl,
-                    name = profileData.name,
-                    email = profileData.email,
-                )
+
+
+            loaded?.let {
+                uiState = it
             }
             achievementsState = repository.getAllAchievement()
 
+            Log.d("ProfileVM", "loadProfile() = $loaded")
         }
     }
 
-
     fun updateUserProfile(name: String, email: String) {
-        val updated = uiState.copy(
-            name = name,
-            email = email
-        )
-
+        val updated = uiState.copy(name = name, email = email)
         viewModelScope.launch {
             repository.updateProfile(updated)
             uiState = updated
@@ -79,7 +81,7 @@ open class ProfileViewModel @Inject constructor(
     fun addAchievement(achievement: Achievement) {
         viewModelScope.launch {
             repository.insertAchievement(achievement)
-            achievementsState = repository.getAllAchievement()  // ⭐ UI 반영 핵심!
+            loadAchievements() // ⭐ UI 즉각 반영
         }
     }
 }

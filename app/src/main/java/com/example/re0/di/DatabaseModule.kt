@@ -49,31 +49,36 @@ object DatabaseModule {
                                     title = "재활용마스터",
                                     iconUrl = R.drawable.badge1,
                                     date = "2025.11.21",
-                                    isDone = false
+                                    isDone = false,
+                                    isBadge=true
                                 ),
                                 Achievement(
                                     title = "분리수거천재",
                                     iconUrl = R.drawable.badge2,
                                     date = "2025.11.22",
-                                    isDone = false
+                                    isDone = false,
+                                    isBadge=true
                                 ),
                                 Achievement(
                                     title = "텀블러킹",
                                     iconUrl = R.drawable.badge3,
                                     date = "2025.11.24",
-                                    isDone = false
+                                    isDone = false,
+                                    isBadge=true
                                 ),
                                 Achievement(
                                     title = "분리수거천재",
                                     iconUrl = R.drawable.badge2,
                                     date = "2025.11.24",
-                                    isDone = false
+                                    isDone = false,
+                                    isBadge=true
                                 ),
                                 Achievement(
                                     title = "텀블러킹",
                                     iconUrl = R.drawable.badge1,
                                     date = "2025.11.20",
-                                    isDone = false
+                                    isDone = false,
+                                    isBadge=true
                                 ),
                                 Achievement(
                                     title = "재활용마스터",
