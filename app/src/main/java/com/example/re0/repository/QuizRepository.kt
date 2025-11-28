@@ -15,11 +15,20 @@ class QuizRepository @Inject constructor(
     private val dataStore: DataStore<Preferences>
 ) {
 
+    val todayIndex: Flow<Int> = dataStore.data
+        .map { it[QuizPreferences.KEY_TODAY_INDEX] ?: 0 }
+
     val selectedState: Flow<Boolean> = dataStore.data
         .map { it[QuizPreferences.KEY_SELECTED] ?: false }
 
     val lastDate: Flow<String> = dataStore.data
         .map { it[QuizPreferences.KEY_LAST_DATE] ?: "" }
+
+    suspend fun updateTodayIndex(index: Int) {
+        dataStore.edit {
+            it[QuizPreferences.KEY_TODAY_INDEX] = index
+        }
+    }
 
     suspend fun updateSelectedState(state: Boolean) {
         dataStore.edit {

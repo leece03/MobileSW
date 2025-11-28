@@ -16,16 +16,18 @@ import com.example.re0.screens.RecordScreen
 //import com.example.re0.screens.RecordScreen
 import com.example.re0.viewModel.PlacesViewModel
 import com.example.re0.viewModel.ProfileViewModel
+import com.example.re0.viewModel.QuizViewModel
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun NavGraph(navController: NavHostController) {
     val placeViewModle: PlacesViewModel = hiltViewModel()
     val profileViewModle: ProfileViewModel = hiltViewModel()
+    val quizViewModel: QuizViewModel = hiltViewModel()
 
     NavHost(navController = navController, startDestination = "home") {
         composable("home") {backStackEntry ->
-            HomeScreen(navController,backStackEntry)
+            HomeScreen(navController,quizViewModel,backStackEntry)
         }
         composable("info") {backStackEntry ->
            InfoScreen(navController,backStackEntry)

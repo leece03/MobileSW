@@ -4,10 +4,9 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -24,8 +23,11 @@ fun CardTemplate(
     modifier: Modifier = Modifier,
     topColor: Color= Mint,
     bottomColor: Color=Color.White,
+    borderLineColor:Color= topColor,
+    dividerLineColor:Color= borderLineColor,
     topContent: @Composable () -> Unit = {},
     bottomContent: @Composable () -> Unit = {}
+
 ) {
     Column(
         modifier = modifier
@@ -34,7 +36,7 @@ fun CardTemplate(
             .clip(RoundedCornerShape(12.dp))
             .border(
                 width = 2.dp,
-                color = topColor,
+                color = borderLineColor,
                 shape = RoundedCornerShape(12.dp)
             )
     ) {
@@ -42,26 +44,36 @@ fun CardTemplate(
             modifier = Modifier
                 .fillMaxWidth()
                 //.height(50.dp)
-                .background(color = topColor),
+                .background(color = topColor)
+                .border(
+                    width = 2.dp,
+                    color = dividerLineColor,
+                    //shape = RoundedCornerShape(12.dp)
+                )
+                .padding(10.dp),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
+
         ) {
-            Spacer(modifier = Modifier.height(10.dp))
+            //Spacer(modifier = Modifier.height(10.dp))
             topContent()
-            Spacer(modifier = Modifier.height(10.dp))
+            //Spacer(modifier = Modifier.height(10.dp))
         }
 
-        Column(
+        LazyColumn(
             modifier = Modifier
                 .fillMaxWidth()
-                //.padding(10.dp)
-                .background(color = bottomColor),
+                .background(color = bottomColor)
+                .padding(10.dp)
+            ,
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Spacer(modifier = Modifier.height(10.dp))
-            bottomContent()
-            Spacer(modifier = Modifier.height(10.dp))
+            item {
+                //Spacer(modifier = Modifier.height(10.dp))
+                bottomContent()
+                //Spacer(modifier = Modifier.height(10.dp))
+            }
         }
     }
 }
