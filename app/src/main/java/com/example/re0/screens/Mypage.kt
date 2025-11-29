@@ -5,6 +5,8 @@ import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -28,7 +30,8 @@ fun MypageScreen(navController: NavController,
         bottomBar ={ BottomBar(navController)}
     ) {innerPadding ->
         Column(modifier = Modifier.fillMaxSize()
-            .padding(innerPadding),
+            .padding(innerPadding)
+            .verticalScroll(rememberScrollState()) ,
             horizontalAlignment = Alignment.CenterHorizontally,) {
             val uiState = viewModel.uiState
             val achievementsState=viewModel.achievementsState
@@ -39,88 +42,3 @@ fun MypageScreen(navController: NavController,
         }
     }
 }
-/*
-@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
-@RequiresApi(Build.VERSION_CODES.O)
-@Preview(showBackground = true)
-@Composable
-fun MyProfilePreview() {
-    Scaffold(
-        topBar = { TopBar() },
-        bottomBar = { BottomBar() }
-    ) { innerPadding ->
-        Column(
-            modifier = Modifier.fillMaxSize()
-                .padding(innerPadding),
-            horizontalAlignment = Alignment.CenterHorizontally,
-
-            ) {
-
-        val fakeAchievements = listOf(
-            Achievement(
-                title = "First Step",
-                iconUrl = R.drawable.rectangle1_2,
-                date = "2025.10.10"
-            ),
-            Achievement(
-                title = "First Step2",
-                iconUrl = R.drawable.rectangle1_1,
-                date = "2025.10.10"
-            ),
-            Achievement(
-                title = "First Step3",
-                iconUrl = R.drawable.rectangle1_2,
-                date = "2025.10.08"
-            ),
-            Achievement(
-                title = "First Step4",
-                iconUrl = R.drawable.rectangle1_1,
-                date = "2025.10.06"
-            ),
-            Achievement(
-                title = "First Step",
-                iconUrl = R.drawable.rectangle1_2,
-                date = "2025.10.10"
-            ),
-            Achievement(
-                title = "First Step2",
-                iconUrl = R.drawable.rectangle1_1,
-                date = "2025.10.07"
-            ),
-            Achievement(
-                title = "First Step3",
-                iconUrl = R.drawable.rectangle1_2,
-                date = "2025.10.07"
-            ),
-            Achievement(
-                title = "First Step4",
-                iconUrl = R.drawable.rectangle1_1,
-                date = "2025.10.07"
-            ),
-            Achievement(
-                title = "First Step4",
-                iconUrl = R.drawable.rectangle1_1,
-                date = "2025.10.07"
-            ),
-            Achievement(
-                title = "First Step4",
-                iconUrl = R.drawable.rectangle1_1,
-                date = "2025.10.04"
-            )
-        )
-        val fakeProfile = Profile(
-            imageUrl = R.drawable.rectangle1_1,
-            name = "홍길동",
-            email = "test@example.com",
-            achievements = fakeAchievements
-        )
-        Column(modifier = Modifier.fillMaxSize()) {
-            MyProfile(uiState = fakeProfile)
-            MyBadge(achievements = fakeAchievements)
-            AchievementsGraph(achievements = fakeAchievements)
-        }
-    }
-}
-}
-
- */

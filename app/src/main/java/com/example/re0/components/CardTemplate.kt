@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -60,20 +59,13 @@ fun CardTemplate(
             //Spacer(modifier = Modifier.height(10.dp))
         }
 
-        LazyColumn(
+        Column(
             modifier = Modifier
                 .fillMaxWidth()
                 .background(color = bottomColor)
-                .padding(10.dp)
-            ,
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
+                .padding(10.dp),
         ) {
-            item {
-                //Spacer(modifier = Modifier.height(10.dp))
-                bottomContent()
-                //Spacer(modifier = Modifier.height(10.dp))
-            }
+            bottomContent()
         }
     }
 }
