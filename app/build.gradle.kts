@@ -8,6 +8,8 @@ plugins {
     alias(libs.plugins.google.secrets)
     alias(libs.plugins.google.services)
     //id("com.google.gms.google-services")
+
+
 }
 
 android {
@@ -55,6 +57,8 @@ tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach 
 dependencies {
     implementation(platform("com.google.firebase:firebase-bom:33.1.2"))
     implementation("com.google.firebase:firebase-analytics-ktx")
+    implementation("com.google.firebase:firebase-auth-ktx")
+    //implementation("com.google.firebase:firebase-firestore-ktx")
 
     implementation("androidx.compose.material:material-icons-extended:<version>")
     implementation(libs.androidx.core.ktx)
