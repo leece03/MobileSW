@@ -1,5 +1,6 @@
 package com.example.re0.screens
 
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -8,6 +9,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -17,8 +19,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -26,6 +26,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -43,26 +44,19 @@ fun LoginScreen(navController: NavController? = null,
                 modifier: Modifier = Modifier) {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
-    val loginState by viewModel.loginState.collectAsState()
-
-    if (loginState) {
-        // 로그인 성공 시 이동 처리
-        LaunchedEffect(Unit) {
-            navController?.navigate("home") // 필요 시 수정
-        }
-    }
+    val context = LocalContext.current
 
     Box(// 재pr
         modifier = modifier
             .fillMaxSize()
             .background(Color.White),
-        //contentAlignment = Alignment.Center
+        contentAlignment = Alignment.Center
     ) {
 
         Column(
             modifier = Modifier
                 .fillMaxSize(),
-            verticalArrangement = Arrangement.spacedBy(20.dp, Alignment.CenterVertically),
+            verticalArrangement = Arrangement.spacedBy(30.dp, Alignment.CenterVertically),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Column(
@@ -118,7 +112,7 @@ fun LoginScreen(navController: NavController? = null,
                     onValueChange = { password = it },
                     label = { Text("Password") }
                 )
-
+                Spacer(modifier= Modifier.height(20.dp))
                 Row(
                     modifier=Modifier
                         .width(332.dp)
@@ -126,8 +120,20 @@ fun LoginScreen(navController: NavController? = null,
                         .background(color = Mint, shape = RoundedCornerShape(size = 20.dp))
                         .padding(start = 66.dp, top = 16.dp, end = 66.dp, bottom = 16.dp)
                         .clickable {
-                            viewModel.login(email, password)
+                            viewModel.login(
+                                email,
+                                password,
+                                onSuccess = {
+                                    navController?.navigate("home") {
+                                        popUpTo("Login") { inclusive = true }
+                                    }
+                                },
+                                onFail = { message ->
+                                    Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+                                }
+                            )
                         }
+
                     ,
                     horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterHorizontally),
                     verticalAlignment = Alignment.CenterVertically,
@@ -158,7 +164,18 @@ fun LoginScreen(navController: NavController? = null,
                         )
                         .padding(start = 66.dp, top = 16.dp, end = 66.dp, bottom = 16.dp)
                         .clickable {
-                            viewModel.signUp(email, password)
+                            viewModel.signUp(
+                                email,
+                                password,
+                                onSuccess = {
+                                    navController?.navigate("home") {
+                                        popUpTo("Login") { inclusive = true }
+                                    }
+                                },
+                                onFail = { message ->
+                                    Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+                                }
+                            )
                         },
                     horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterHorizontally),
                     verticalAlignment = Alignment.CenterVertically,
@@ -176,6 +193,7 @@ fun LoginScreen(navController: NavController? = null,
                 }
 
             }
+            Spacer(modifier= Modifier.height(80.dp))
         }
     }
 }

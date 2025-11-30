@@ -4,28 +4,52 @@ import androidx.lifecycle.ViewModel
 import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.lifecycle.HiltViewModel
 import jakarta.inject.Inject
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
 
 @HiltViewModel
 class AuthViewModel @Inject constructor(
     private val auth: FirebaseAuth
 ) : ViewModel() {
 
-    private val _loginState = MutableStateFlow(false)
-    val loginState = _loginState.asStateFlow()
+    fun login(
+        email: String,
+        password: String,
+        onSuccess: () -> Unit,
+        onFail: (String) -> Unit
+    ) {
+        if (email.isBlank() || password.isBlank()) {
+            onFail("이메일 또는 비밀번호가 비어 있습니다.")
+            return
+        }
 
-    fun login(email: String, password: String) {
         auth.signInWithEmailAndPassword(email, password)
             .addOnCompleteListener { task ->
-                _loginState.value = task.isSuccessful
+                if (task.isSuccessful) {
+                    onSuccess()
+                } else {
+                    onFail(task.exception?.localizedMessage ?: "로그인 실패")
+                }
             }
     }
 
-    fun signUp(email: String, password: String) {
+
+    fun signUp(
+        email: String,
+        password: String,
+        onSuccess: () -> Unit,
+        onFail: (String) -> Unit
+    ) {
+        if (email.isBlank() || password.isBlank()) {
+            onFail("이메일 또는 비밀번호가 비어 있습니다.")
+            return
+        }
+
         auth.createUserWithEmailAndPassword(email, password)
             .addOnCompleteListener { task ->
-                _loginState.value = task.isSuccessful
+                if (task.isSuccessful) {
+                    onSuccess()
+                } else {
+                    onFail(task.exception?.localizedMessage ?: "회원가입 실패")
+                }
             }
     }
 }
