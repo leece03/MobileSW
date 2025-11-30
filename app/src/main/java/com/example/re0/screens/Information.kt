@@ -10,6 +10,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -17,16 +19,17 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.rememberModalBottomSheetState
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
@@ -36,14 +39,11 @@ import com.example.re0.R
 import com.example.re0.components.CardTemplate
 import com.example.re0.ui.theme.SkyBlue
 
-
-
 data class TrashInfoData(
     val title: String,
     val guide: String,
     val caution: String
 )
-
 
 @Composable
 fun TrashInfoSheet(
@@ -59,8 +59,6 @@ fun TrashInfoSheet(
         verticalArrangement = Arrangement.spacedBy(12.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-
-
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -78,7 +76,6 @@ fun TrashInfoSheet(
             )
         }
 
-
         Text(
             text = "버리는 요령",
             fontSize = 15.sp,
@@ -89,7 +86,6 @@ fun TrashInfoSheet(
                 .padding(start = 16.dp)
         )
 
-
         Text(
             text = info.guide,
             fontSize = 15.sp,
@@ -97,7 +93,6 @@ fun TrashInfoSheet(
             color = Color(0xFF656565),
             modifier = Modifier.padding(horizontal = 16.dp)
         )
-
 
         Text(
             text = "주의사항",
@@ -109,7 +104,6 @@ fun TrashInfoSheet(
                 .padding(start = 16.dp, top = 4.dp)
         )
 
-
         Text(
             text = info.caution,
             fontSize = 15.sp,
@@ -120,7 +114,6 @@ fun TrashInfoSheet(
     }
 }
 
-
 @Composable
 fun InfoScreen(navController: NavController, backStackEntry: NavBackStackEntry) {
     Scaffold(
@@ -130,7 +123,6 @@ fun InfoScreen(navController: NavController, backStackEntry: NavBackStackEntry) 
         InformationContent(innerPadding)
     }
 }
-
 
 @Composable
 fun ClickableImageRow(
@@ -154,50 +146,146 @@ fun ClickableImageRow(
     }
 }
 
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun InformationContent(innerPadding: PaddingValues) {
-
     var showSheet by remember { mutableStateOf(false) }
     var sheetData by remember { mutableStateOf<TrashInfoData?>(null) }
+    var searchQuery by remember { mutableStateOf(TextFieldValue("")) }
 
+    val allTrashItems = remember {
+        listOf(
+            TrashInfoData(
+                "종이",
+                "책, 노트, 박스류: 테이프·스티커 제거 후 배출\n종이컵·종이팩: 깨끗이 헹구고 펼쳐서 배출",
+                "영수증, 카페 종이컵의 코팅된 뚜껑/빨대는 일반쓰레기\n음식 오염 종이는 재활용 불가"
+            ),
+            TrashInfoData(
+                "유리(병류)",
+                "내용물 비우고 물로 간단히 헹구기\n라벨은 떼면 좋지만 필수는 아님",
+                "깨진 유리는 재활용 불가 → 신문지로 감싸 일반쓰레기\n뚜껑은 재질별로 따로 (철·플라스틱·알루미늄)"
+            ),
+            TrashInfoData(
+                "플라스틱",
+                "PET, PP, HDPE 등 플라스틱 용기 비우고 헹구기\n라벨 제거 가능하면 제거(PET 병은 의무)",
+                "색이 짙거나 불투명하면 재활용 효율 낮음\n음식물 기름 완전 제거 필요"
+            ),
+            TrashInfoData(
+                "비닐류",
+                "과자봉지, 라면봉지 등 씻기 힘든 비닐은 대부분 재활용 불가\n포장 비닐(깨끗하면 재활용 가능)만 배출",
+                "오염된 비닐은 일반쓰레기\n은박코팅 비닐 → 재활용 불가"
+            ),
+            TrashInfoData(
+                "캔류",
+                "내용물 비우고 간단히 헹굼\n알루미늄캔/철캔 모두 재활용 가능",
+                "스프레이류: 구멍 뚫지 말고 내용물 완전히 소진 후 배출\n부탄가스/살충제 → 전용 수거함 이용"
+            ),
+            TrashInfoData(
+                "스티로폼",
+                "로고, 테이프, 스티커 제거\n깨끗한 포장용 스티로폼만 재활용 가능",
+                "음식물 묻은 배달용 스티로폼은 일반쓰레기\n건축용 단열재 스티로폼 → 재활용 불가"
+            ),
+            TrashInfoData(
+                "의류",
+                "헌옷수거함에 넣기 (깨끗하고 재사용 가능한 것들)",
+                "젖은 옷, 찢어진 옷, 솜/이불류 → 일반쓰레기 또는 대형폐기물\n구두·가방은 의류가 아닌 일반잡화 → 별도 배출"
+            ),
+            TrashInfoData(
+                "금속류(냄비·프라이팬 포함)",
+                "씻어서 금속류로 배출",
+                "플라스틱 손잡이는 제거 가능하면 제거\n코팅 벗겨진 후라이팬도 금속류로 가능"
+            ),
+            TrashInfoData(
+                "형광등·전구",
+                "아파트 단지 / 주민센터 / 근처 마트 전용 수거함 이용",
+                "형광등은 유해물질 포함 → 일반쓰레기 절대 금지\nLED 전구는 일반쓰레기가 원칙(지자체 따라 다름)"
+            ),
+            TrashInfoData(
+                "컴퓨터·전자제품",
+                "대형 폐가전 무상배출 서비스 이용(컴퓨터/TV/냉장고 등)\n소형 전자제품은 종종 동 주민센터나 마트 수거함 있음",
+                "무단배출 금지, 그냥 버리면 과태료\n데이터 저장장치(SSD/HDD)는 파손 후 배출 추천"
+            ),
+            TrashInfoData(
+                "음식물 쓰레기",
+                "물기 최대한 제거\n뼈·견과류 딱딱한 부분·티백·껍데기 일부는 음식물 아님",
+                "닭뼈·소고기뼈·돼지뼈\n조개/게/새우 껍데기\n과일 껍질 중 딱딱한 것(파인애플·바나나 끝부분 등)"
+            ),
+            TrashInfoData(
+                "대형 폐기물",
+                "침대, 책상, 가전 등 큰 물건\n동사무소/구청 사이트에서 대형폐기물 스티커 구매 후 배출\n또는 폐가전 무상배출 신청",
+                "무단으로 버리면 과태료"
+            )
+        )
+    }
 
     Box(
         modifier = Modifier
             .padding(innerPadding)
-            .width(412.dp)
-            .height(917.dp)
+            .fillMaxSize()
             .background(Color.White)
     ) {
-
         Column(
             modifier = Modifier
                 .padding(horizontal = 20.dp)
                 .fillMaxWidth(),
         ) {
-
-            // 검색 박스
             Row(
                 modifier = Modifier
                     .padding(top = 25.dp)
                     .fillMaxWidth()
                     .height(53.dp)
                     .background(Color(0xFFE3F3FB), RoundedCornerShape(48.dp))
-                    .padding(horizontal = 15.dp, vertical = 9.dp),
-                horizontalArrangement = Arrangement.SpaceBetween,
+                    .padding(horizontal = 15.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Text("분리수거 검색하기", fontSize = 16.sp, color = Color(0xFF656565))
+                TextField(
+                    value = searchQuery,
+                    onValueChange = { searchQuery = it },
+                    placeholder = {
+                        Text(
+                            text = "분리수거 검색하기",
+                            color = Color(0xFF656565)
+                        )
+                    },
+                    modifier = Modifier
+                        .weight(1f)
+                        .fillMaxHeight(),
+                    colors = TextFieldDefaults.colors(
+                        focusedContainerColor = Color.Transparent,
+                        unfocusedContainerColor = Color.Transparent,
+                        focusedIndicatorColor = Color.Transparent,
+                        unfocusedIndicatorColor = Color.Transparent,
+                        cursorColor = Color.Black,
+                        focusedTextColor = Color.Black,
+                        unfocusedTextColor = Color.Black,
+                        focusedPlaceholderColor = Color(0xFF656565),
+                        unfocusedPlaceholderColor = Color(0xFF656565),
+                    ),
+                    singleLine = true
+                )
+
+                Spacer(modifier = Modifier.width(8.dp))
+
                 Image(
                     painter = painterResource(id = R.drawable.search),
-                    contentDescription = null,
-                    modifier = Modifier.size(24.dp)
+                    contentDescription = "Search Icon",
+                    modifier = Modifier
+                        .size(24.dp)
+                        .clickable {
+                            val query = searchQuery.text.trim()
+                            if (query.isNotEmpty()) {
+                                val match = allTrashItems.firstOrNull { item ->
+                                    item.title.contains(query, ignoreCase = true)
+                                }
+                                if (match != null) {
+                                    sheetData = match
+                                    showSheet = true
+                                }
+                            }
+                        }
                 )
             }
 
-
-            // 주요 분리수거 카드
             CardTemplate(
                 modifier = Modifier.fillMaxWidth(),
                 topColor = Color.White,
@@ -206,7 +294,6 @@ fun InformationContent(innerPadding: PaddingValues) {
                     Text("주요 분리수거 쓰레기", fontSize = 23.sp, fontWeight = FontWeight.Bold)
                 },
                 bottomContent = {
-
                     Column(
                         modifier = Modifier
                             .width(380.dp)
@@ -215,7 +302,6 @@ fun InformationContent(innerPadding: PaddingValues) {
                         verticalArrangement = Arrangement.spacedBy(23.dp),
                         horizontalAlignment = Alignment.Start,
                     ) {
-
                         Column(verticalArrangement = Arrangement.spacedBy(20.dp)) {
                             ClickableImageRow(
                                 icons = listOf(
@@ -226,34 +312,10 @@ fun InformationContent(innerPadding: PaddingValues) {
                                 ),
                                 onClick = { index ->
                                     sheetData = when (index) {
-                                        0 -> TrashInfoData(
-                                            "종이",
-                                            "책, 노트, 박스류: 테이프·스티커 제거 후 배출\n" +
-                                                    "종이컵·종이팩: 깨끗이 헹구고 펼쳐서 배출",
-                                            "영수증, 카페 종이컵의 코팅된 뚜껑/빨대는 일반쓰레기\n" +
-                                                    "음식 오염 종이는 재활용 불가"
-                                        )
-                                        1 -> TrashInfoData(
-                                            "유리(병류)",
-                                            "내용물 비우고 물로 간단히 헹구기\n" +
-                                                    "라벨은 떼면 좋지만 필수는 아님",
-                                            "깨진 유리는 재활용 불가 → 신문지로 감싸 일반쓰레기\n" +
-                                                    "뚜껑은 재질별로 따로 (철·플라스틱·알루미늄)"
-                                        )
-                                        2 -> TrashInfoData(
-                                            "플라스틱",
-                                            "PET, PP, HDPE 등 플라스틱 용기 비우고 헹구기\n" +
-                                                    "라벨 제거 가능하면 제거(PET 병은 의무)",
-                                            "색이 짙거나 불투명하면 재활용 효율 낮음\n" +
-                                                    "음식물 기름 완전 제거 필요"
-                                        )
-                                        3 -> TrashInfoData(
-                                            "비닐류",
-                                            "과자봉지, 라면봉지 등 씻기 힘든 비닐은 대부분 재활용 불가\n" +
-                                                    "포장 비닐(깨끗하면 재활용 가능)만 배출",
-                                            "오염된 비닐은 일반쓰레기\n" +
-                                                    "은박코팅 비닐 → 재활용 불가"
-                                        )
+                                        0 -> allTrashItems[0]
+                                        1 -> allTrashItems[1]
+                                        2 -> allTrashItems[2]
+                                        3 -> allTrashItems[3]
                                         else -> null
                                     }
                                     showSheet = sheetData != null
@@ -269,36 +331,10 @@ fun InformationContent(innerPadding: PaddingValues) {
                                 ),
                                 onClick = { index ->
                                     sheetData = when (index) {
-                                        0 -> TrashInfoData(
-                                            "캔류",
-                                            "내용물 비우고 간단히 헹굼\n" +
-                                                    "알루미늄캔/철캔 모두 재활용 가능",
-                                            "스프레이류: 구멍 뚫지 말고 내용물 완전히 소진 후 배출\n" +
-                                                    "부탄가스/살충제 → 전용 수거함 이용"
-                                        )
-
-                                        1 -> TrashInfoData(
-                                            "스티로폼",
-                                            "로고, 테이프, 스티커 제거\n" +
-                                                    "깨끗한 포장용 스티로폼만 재활용 가능",
-                                            "음식물 묻은 배달용 스티로폼은 일반쓰레기\n" +
-                                                    "건축용 단열재 스티로폼 → 재활용 불가"
-                                        )
-
-                                        2 -> TrashInfoData(
-                                            "의류",
-                                            "헌옷수거함에 넣기 (깨끗하고 재사용 가능한 것들)",
-                                            "젖은 옷, 찢어진 옷, 솜/이불류 → 일반쓰레기 또는 대형폐기물\n" +
-                                                    "구두·가방은 의류가 아닌 일반잡화 → 별도 배출"
-                                        )
-
-                                        3 -> TrashInfoData(
-                                            "금속류(냄비·프라이팬 포함)",
-                                            "씻어서 금속류로 배출",
-                                            "플라스틱 손잡이는 제거 가능하면 제거\n" +
-                                                    "코팅 벗겨진 후라이팬도 금속류로 가능"
-                                        )
-
+                                        0 -> allTrashItems[4]
+                                        1 -> allTrashItems[5]
+                                        2 -> allTrashItems[6]
+                                        3 -> allTrashItems[7]
                                         else -> null
                                     }
                                     showSheet = sheetData != null
@@ -314,38 +350,10 @@ fun InformationContent(innerPadding: PaddingValues) {
                                 ),
                                 onClick = { index ->
                                     sheetData = when (index) {
-                                        0 -> TrashInfoData(
-                                            "형광등·전구",
-                                            "아파트 단지 / 주민센터 / 근처 마트 전용 수거함 이용",
-                                            "형광등은 유해물질 포함 → 일반쓰레기 절대 금지\n" +
-                                                    "LED 전구는 일반쓰레기가 원칙(지자체 따라 다름)"
-                                        )
-
-                                        1 -> TrashInfoData(
-                                            "컴퓨터·전자제품",
-                                            "대형 폐가전 무상배출 서비스 이용(컴퓨터/TV/냉장고 등)\n" +
-                                                    "소형 전자제품은 종종 동 주민센터나 마트 수거함 있음",
-                                            "무단배출 금지, 그냥 버리면 과태료\n" +
-                                                    "데이터 저장장치(SSD/HDD)는 파손 후 배출 추천"
-                                        )
-
-                                        2 -> TrashInfoData(
-                                            "음식물 쓰레기",
-                                            "물기 최대한 제거\n" +
-                                                    "뼈·견과류 딱딱한 부분·티백·껍데기 일부는 음식물 아님",
-                                            "닭뼈·소고기뼈·돼지뼈\n" +
-                                                    "조개/게/새우 껍데기\n" +
-                                                    "과일 껍질 중 딱딱한 것(파인애플·바나나 끝부분 등)"
-                                        )
-
-                                        3 -> TrashInfoData(
-                                            "대형 폐기물",
-                                            "침대, 책상, 가전 등 큰 물건\n" +
-                                                    "동사무소/구청 사이트에서 대형폐기물 스티커 구매 후 배출\n" +
-                                                    "또는 폐가전 무상배출 신청",
-                                            "무단으로 버리면 과태료"
-                                        )
-
+                                        0 -> allTrashItems[8]
+                                        1 -> allTrashItems[9]
+                                        2 -> allTrashItems[10]
+                                        3 -> allTrashItems[11]
                                         else -> null
                                     }
                                     showSheet = sheetData != null
@@ -355,8 +363,6 @@ fun InformationContent(innerPadding: PaddingValues) {
                     }
                 }
             )
-
-
 
             CardTemplate(
                 topColor = SkyBlue,
@@ -382,14 +388,11 @@ fun InformationContent(innerPadding: PaddingValues) {
                             .padding(10.dp),
                         verticalArrangement = Arrangement.spacedBy(12.dp)
                     ) {
-
                         Row(
                             modifier = Modifier.fillMaxWidth(),
                             horizontalArrangement = Arrangement.spacedBy(12.dp),
                             verticalAlignment = Alignment.CenterVertically
                         ) {
-
-                            // 봇 이미지
                             Image(
                                 painter = painterResource(id = R.drawable.bot),
                                 contentDescription = null,
@@ -398,7 +401,6 @@ fun InformationContent(innerPadding: PaddingValues) {
                                     .background(Color(0xFFD9D9D9), RoundedCornerShape(46.dp))
                             )
 
-                            // 챗봇 박스
                             Box(
                                 modifier = Modifier
                                     .weight(1f)
@@ -453,7 +455,4 @@ fun InformationContent(innerPadding: PaddingValues) {
             }
         }
     }
-
-
-
 }
