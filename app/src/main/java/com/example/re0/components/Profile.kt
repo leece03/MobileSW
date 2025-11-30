@@ -1,5 +1,6 @@
 package com.example.re0.components
 
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -16,26 +17,45 @@ import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.example.re0.model.Achievement
 import com.example.re0.model.Profile
 import com.example.re0.ui.theme.Mint
+import com.example.re0.viewModel.ProfileViewModel
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.userProfileChangeRequest
 
 @Composable
 fun MyProfile(
+    navController: NavController,
     uiState: Profile,
-    achievements: List<Achievement>
+    achievements: List<Achievement>,
+    viewModel: ProfileViewModel,
 ) {
+    val user = FirebaseAuth.getInstance().currentUser
+    val email = user?.email
+
+    val context = LocalContext.current
+    var editing by remember { mutableStateOf(false) }
+    var newName by remember { mutableStateOf(uiState.name) }
+
     CardTemplate(
         topColor = Mint,
         bottomColor = Mint,
@@ -74,13 +94,44 @@ fun MyProfile(
                     )
                     Spacer(modifier = Modifier.width(20.dp))
                     Column {
+                        if (!editing) {
                         Text("닉네임: ${uiState.name}", fontSize = 15.sp)
-                        Text("이메일: ${uiState.email}", fontSize = 15.sp)
+                        } else {
+                            OutlinedTextField(
+                                value = newName,
+                                onValueChange = { newName = it },
+                                label = { Text("닉네임 수정") },
+                                modifier = Modifier.width(150.dp)
+                            )
+                        }
+                        Text("이메일: ${email}", fontSize = 15.sp)
                         Text("달성기록:  ${achievements.size}", fontSize = 15.sp)
                     }
                     Spacer(modifier = Modifier.width(10.dp))
                     Column{
-                        FloatingActionButton(onClick = {},
+                        FloatingActionButton( onClick = {
+                            if (!editing) {
+                                editing = true
+                            } else {
+                                val profileUpdate = userProfileChangeRequest {
+                                    displayName = newName
+                                }
+
+                                user?.updateProfile(profileUpdate)
+                                    ?.addOnSuccessListener {
+                                        viewModel.updateUserProfile(
+                                            name = newName,
+                                            email = uiState.email
+                                        )
+                                        editing = false
+                                        Toast.makeText(context, "닉네임 변경 완료!", Toast.LENGTH_SHORT).show()
+                                    }
+                                    ?.addOnFailureListener {
+                                        Toast.makeText(context, "변경 실패", Toast.LENGTH_SHORT).show()
+                                    }
+                            }
+
+                        },
                             containerColor = Mint,
                             modifier = Modifier.size(30.dp)
                         ) {
@@ -90,7 +141,12 @@ fun MyProfile(
                             )
                         }
                         Spacer(modifier = Modifier.height(30.dp))
-                        FloatingActionButton(onClick = {},
+                        FloatingActionButton(onClick = {
+                            FirebaseAuth.getInstance().signOut()
+                            navController.navigate("login") {
+                                popUpTo("home") { inclusive = true } // 뒤로가기로 홈 못 돌아오게
+                            }
+                        },
                             containerColor = Mint,
                             modifier = Modifier.width(60.dp)
                                 .height(30.dp)
