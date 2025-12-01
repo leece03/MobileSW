@@ -2,6 +2,7 @@ package com.example.re0.components
 
 import android.widget.Toast
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -79,8 +80,9 @@ fun MyProfile(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier.background(Color.White)
                         .fillMaxWidth()
-                        .padding(10.dp)
+                        .padding(10.dp),
 
+                    horizontalArrangement = Arrangement.SpaceBetween
 
                 ) {
                     AsyncImage(
@@ -92,68 +94,82 @@ fun MyProfile(
                             .background(Mint),
                         contentScale = ContentScale.Crop
                     )
-                    Spacer(modifier = Modifier.width(20.dp))
-                    Column {
-                        if (!editing) {
-                        Text("닉네임: ${uiState.name}", fontSize = 15.sp)
-                        } else {
-                            OutlinedTextField(
-                                value = newName,
-                                onValueChange = { newName = it },
-                                label = { Text("닉네임 수정") },
-                                modifier = Modifier.width(150.dp)
-                            )
-                        }
-                        Text("이메일: ${email}", fontSize = 15.sp)
-                        Text("달성기록:  ${achievements.size}", fontSize = 15.sp)
-                    }
                     Spacer(modifier = Modifier.width(10.dp))
-                    Column{
-                        FloatingActionButton( onClick = {
+                    Column (verticalArrangement = Arrangement.Center){
+                        Row(modifier = Modifier.fillMaxWidth(),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.SpaceBetween) {
                             if (!editing) {
-                                editing = true
+                                Text("닉네임: ${uiState.name}", fontSize = 15.sp)
                             } else {
-                                val profileUpdate = userProfileChangeRequest {
-                                    displayName = newName
+                                OutlinedTextField(
+                                    value = newName,
+                                    onValueChange = { newName = it },
+                                    label = { Text("닉네임 수정") },
+                                    modifier = Modifier.width(150.dp)
+                                )
+                            }
+                            FloatingActionButton( onClick = {
+                                if (!editing) {
+                                    editing = true
+                                } else {
+                                    val profileUpdate = userProfileChangeRequest {
+                                        displayName = newName
+                                    }
+
+                                    user?.updateProfile(profileUpdate)
+                                        ?.addOnSuccessListener {
+                                            viewModel.updateUserProfile(
+                                                name = newName,
+                                                email = uiState.email
+                                            )
+                                            editing = false
+                                            Toast.makeText(context, "닉네임 변경 완료!", Toast.LENGTH_SHORT).show()
+                                        }
+                                        ?.addOnFailureListener {
+                                            Toast.makeText(context, "변경 실패", Toast.LENGTH_SHORT).show()
+                                        }
                                 }
 
-                                user?.updateProfile(profileUpdate)
-                                    ?.addOnSuccessListener {
-                                        viewModel.updateUserProfile(
-                                            name = newName,
-                                            email = uiState.email
-                                        )
-                                        editing = false
-                                        Toast.makeText(context, "닉네임 변경 완료!", Toast.LENGTH_SHORT).show()
-                                    }
-                                    ?.addOnFailureListener {
-                                        Toast.makeText(context, "변경 실패", Toast.LENGTH_SHORT).show()
-                                    }
+                            },
+                                containerColor = Mint,
+                                modifier = Modifier.size(30.dp)
+                            ) {
+                                Icon(imageVector = Icons.Default.Edit,
+                                    contentDescription = "edit",
+                                    modifier = Modifier.size(20.dp)
+                                )
                             }
-
-                        },
-                            containerColor = Mint,
-                            modifier = Modifier.size(30.dp)
-                        ) {
-                            Icon(imageVector = Icons.Default.Edit,
-                                contentDescription = "edit",
-                                modifier = Modifier.size(20.dp)
-                            )
                         }
-                        Spacer(modifier = Modifier.height(30.dp))
-                        FloatingActionButton(onClick = {
-                            FirebaseAuth.getInstance().signOut()
-                            navController.navigate("login") {
-                                popUpTo("home") { inclusive = true } // 뒤로가기로 홈 못 돌아오게
+                        Spacer(modifier = Modifier.height(10.dp))
+
+                        Text("이메일: ${email}", fontSize = 15.sp)
+
+
+                        Row(modifier = Modifier.fillMaxWidth(),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.SpaceBetween) {
+                            Text("달성기록:  ${achievements.size}", fontSize = 15.sp)
+                            Column{
+
+                                Spacer(modifier = Modifier.height(30.dp))
+                                FloatingActionButton(onClick = {
+                                    FirebaseAuth.getInstance().signOut()
+                                    navController.navigate("login") {
+                                        popUpTo("home") { inclusive = true } // 뒤로가기로 홈 못 돌아오게
+                                    }
+                                },
+                                    containerColor = Mint,
+                                    modifier = Modifier.width(60.dp)
+                                        .height(30.dp)
+                                ) {
+                                    Text("로그아웃", fontSize = 10.sp, color = Color.White)
+                                }
                             }
-                        },
-                            containerColor = Mint,
-                            modifier = Modifier.width(60.dp)
-                                .height(30.dp)
-                        ) {
-                            Text("로그아웃", fontSize = 10.sp, color = Color.White)
                         }
                     }
+
+
                 }
             }
         }

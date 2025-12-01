@@ -50,17 +50,18 @@ fun HomeScreen( navController: NavController, viewModel: QuizViewModel,backStack
             imgId = R.drawable.rectangle1_2
         ),
         NewsItem(
-            title = "폐플라스틱 재활용, '화학적 분해' 혁신 기술 도입",
+            title = "폐플라스틱 재활용, '화학적 분해' 기술 도입",
             content = "열분해 기술로 복합 재질 플라스틱을 고품질 원료로 되돌리는 기술이 상용화를 앞두고 있습니다.",
             source = "과학기술정보통신부",
             date = "2025. 10. 28.",
             imgId = R.drawable.rectangle1_1
-        ),NewsItem(
-            title = "폐플라스틱 재활용, '화학적 분해' 혁신 기술 도입",
-            content = "열분해 기술로 복합 재질 플라스틱을 고품질 원료로 되돌리는 기술이 상용화를 앞두고 있습니다.",
-            source = "과학기술정보통신부",
-            date = "2025. 10. 28.",
-            imgId = R.drawable.rectangle1_1
+        ),
+        NewsItem(
+            title = "AI 기술로 재활용 분류 정확도 향상",
+            content = "카메라 인식과 딥러닝을 이용한 자동 분류 시스템이 전국 지자체에 확대될 예정입니다.",
+            source = "환경부",
+            date = "2025. 11. 01.",
+            imgId = R.drawable.rectangle1_2
         ),
 
         NewsItem(
