@@ -39,7 +39,12 @@ class PlacesViewModel @Inject constructor(
     private val repository: PlacesRepository,
     private val firestore: FirebaseFirestore
 ) : ViewModel() {
+    private var currentUserLocation: Pair<Double, Double>? = null
 
+    fun setUserLocation(lat: Double, lng: Double) {
+        currentUserLocation = lat to lng
+        updateDistances(lat, lng)
+    }
     private val db = FirebaseFirestore.getInstance()
 
     private val _places = MutableStateFlow<List<Place>>(emptyList())
@@ -72,6 +77,11 @@ class PlacesViewModel @Inject constructor(
                     doc.toObject(Place::class.java)
                 }
                 _places.value = list
+
+                // 🔥 장소 로드 후 거리 자동 계산 호출!
+                currentUserLocation?.let { (lat, lng) ->
+                    updateDistances(lat, lng)
+                }
             }
             .addOnFailureListener {
                 it.printStackTrace()
