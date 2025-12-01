@@ -36,7 +36,7 @@ object DatabaseModule {
         instance = Room.databaseBuilder(
             context,
             AppDatabase::class.java,
-            "app_db_v2"
+            "app_db_v3"
         )
             .addCallback(object : RoomDatabase.Callback() {
                 override fun onCreate(db: SupportSQLiteDatabase) {

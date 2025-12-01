@@ -36,8 +36,10 @@ import com.google.maps.android.compose.rememberCameraPositionState
 
 @Composable
 fun MapScreen(navController: NavController, viewModel: PlacesViewModel = hiltViewModel(), backStackEntry: NavBackStackEntry){
+
     val places by viewModel.places.collectAsState()
     val filteredPlaces by viewModel.filteredPlaces.collectAsState()
+
     LaunchedEffect(Unit) {
         viewModel.applyFilter(PlaceType.ZERO_WASTE)
     }
@@ -50,9 +52,14 @@ fun MapScreen(navController: NavController, viewModel: PlacesViewModel = hiltVie
     // 어떤 리스트를 보여줄지 선택
     val listToShow = if (filteredPlaces.isNotEmpty()) filteredPlaces else placeList
     // 서울 좌표
-    val seoul = LatLng(37.5665, 126.9780)
+    var userLat= 37.5665
+    var userLng=126.9780
+    val seoul = LatLng(userLat, userLng)
 // 카메라 초기 위치
     val selectedFilter by viewModel.selectedFilter.collectAsState()
+
+    viewModel.setUserLocation(userLat, userLng)
+
 
     val cameraPositionState = rememberCameraPositionState {
         position = CameraPosition.fromLatLngZoom(seoul, 12f)
