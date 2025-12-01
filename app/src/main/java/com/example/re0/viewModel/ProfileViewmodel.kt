@@ -52,7 +52,7 @@ class ProfileViewModel @Inject constructor(
             if (loaded == null) {
                 repository.insertProfile(
                     Profile(
-                        imageUrl = R.drawable.rectangle1_2,
+                        imageUrl = R.drawable.earth,
                         name = "홍길동",
                         email = "hong@test.com"
                     )

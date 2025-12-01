@@ -4,6 +4,7 @@ import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -16,7 +17,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.FloatingActionButton
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -39,6 +39,8 @@ import coil.compose.AsyncImage
 import com.example.re0.model.Achievement
 import com.example.re0.model.Profile
 import com.example.re0.ui.theme.Mint
+import com.example.re0.ui.theme.SkyBlue
+import com.example.re0.ui.theme.Yello
 import com.example.re0.viewModel.ProfileViewModel
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.userProfileChangeRequest
@@ -58,22 +60,20 @@ fun MyProfile(
     var newName by remember { mutableStateOf(uiState.name) }
 
     CardTemplate(
-        topColor = Mint,
-        bottomColor = Mint,
+        topColor = Yello,
+        bottomColor = Yello,
         topContent = {
-            Text(text = "내 정보", color = Color.White, fontSize = 23.sp, fontWeight = FontWeight.Bold)
-            Text("나만의 목표 등록 및 달성 기록", fontSize = 18.sp)
-            Spacer(modifier = Modifier.height(10.dp))
-            HorizontalDivider(
-                thickness = 1.dp,
-                color = Color.LightGray
-            )
+            Text(text = "내 정보", color = Color.Black, fontSize = 23.sp, fontWeight = FontWeight.Bold)
+            Text("나만의 목표 등록 및 달성 기록", fontSize = 20.sp)
         },
         bottomContent = {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.padding(10.dp)
+                modifier = Modifier.padding(horizontal = 10.dp)
+                    .padding(bottom = 10.dp)
                     .clip(RoundedCornerShape(12.dp))
+                    .height(IntrinsicSize.Min)
+                ,
 
             ) {
                 Row(
@@ -94,8 +94,10 @@ fun MyProfile(
                             .background(Mint),
                         contentScale = ContentScale.Crop
                     )
-                    Spacer(modifier = Modifier.width(10.dp))
-                    Column (verticalArrangement = Arrangement.Center){
+                    Spacer(modifier = Modifier.width(25.dp))
+                    Column (
+                        modifier = Modifier.weight(1f),
+                        verticalArrangement = Arrangement.Center){
                         Row(modifier = Modifier.fillMaxWidth(),
                             verticalAlignment = Alignment.CenterVertically,
                             horizontalArrangement = Arrangement.SpaceBetween) {
@@ -132,7 +134,7 @@ fun MyProfile(
                                 }
 
                             },
-                                containerColor = Mint,
+                                containerColor = Yello,
                                 modifier = Modifier.size(30.dp)
                             ) {
                                 Icon(imageVector = Icons.Default.Edit,
@@ -141,18 +143,15 @@ fun MyProfile(
                                 )
                             }
                         }
-                        Spacer(modifier = Modifier.height(10.dp))
+                        Spacer(modifier = Modifier.height(5.dp))
 
                         Text("이메일: ${email}", fontSize = 15.sp)
 
-
+                        Spacer(modifier = Modifier.height(5.dp))
                         Row(modifier = Modifier.fillMaxWidth(),
                             verticalAlignment = Alignment.CenterVertically,
                             horizontalArrangement = Arrangement.SpaceBetween) {
                             Text("달성기록:  ${achievements.size}", fontSize = 15.sp)
-                            Column{
-
-                                Spacer(modifier = Modifier.height(30.dp))
                                 FloatingActionButton(onClick = {
                                     FirebaseAuth.getInstance().signOut()
                                     navController.navigate("login") {
@@ -163,8 +162,7 @@ fun MyProfile(
                                     modifier = Modifier.width(60.dp)
                                         .height(30.dp)
                                 ) {
-                                    Text("로그아웃", fontSize = 10.sp, color = Color.White)
-                                }
+                                    Text("로그아웃", fontSize = 10.sp, color = SkyBlue)
                             }
                         }
                     }

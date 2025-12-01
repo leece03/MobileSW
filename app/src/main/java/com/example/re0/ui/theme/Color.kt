@@ -15,3 +15,5 @@ val Mint: Color = Color(0xFF65F9E3)
 val SkyBlue: Color = Color(color =  0xFFE3F3FB)
 
 val NeonBlue: Color = Color(color = 0xFF79ECF4)
+
+val Yello: Color = Color(color = 0xFFF9F4A1)

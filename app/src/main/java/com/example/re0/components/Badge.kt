@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -48,20 +47,17 @@ fun BadgeItem(achievement: Achievement) {
 @Composable
 fun MyBadge( achievements: List<Achievement>,badgeCount:Int) {
     CardTemplate(
-        topColor = Mint,
-        bottomColor = Mint,
+        topColor = Color.White,
+        bottomColor = Color.White,
+        borderLineColor = Mint,
         topContent = {
             Text(
                 text = "배지",
-                color = Color.White,
+                color = Color.Black,
                 fontSize = 23.sp,
                 fontWeight = FontWeight.Bold
             )
-            Text("획득 목록 : ${badgeCount}", fontSize = 14.sp)
-            HorizontalDivider(
-                thickness = 1.dp,
-                color = Color.LightGray
-            )
+            Text("획득 목록 : ${badgeCount}", fontSize = 20.sp)
         },
         bottomContent = {
             Row(horizontalArrangement = Arrangement.Center,
