@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -42,16 +41,13 @@ fun AchievementsGraph(
     achievements: List<Achievement>
 ) {
     CardTemplate(
-        topColor = Mint,
+        topColor = Color.White,
         bottomColor = Color.White,
+        borderLineColor = Mint,
         topContent = {
-            Text(text = "통계 그래프", color = Color.White, fontSize = 23.sp, fontWeight = FontWeight.Bold)
+            Text(text = "통계 그래프", color = Color.Black, fontSize = 23.sp, fontWeight = FontWeight.Bold)
             Text("나만의 목표 등록 및 달성 기록", fontSize = 18.sp)
             Spacer(modifier = Modifier.height(10.dp))
-            HorizontalDivider(
-                thickness = 1.dp,
-                color = Color.LightGray
-            )
         },
         bottomContent = {
 

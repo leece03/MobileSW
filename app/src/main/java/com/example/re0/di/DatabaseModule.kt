@@ -36,7 +36,7 @@ object DatabaseModule {
         instance = Room.databaseBuilder(
             context,
             AppDatabase::class.java,
-            "app_db_v3"
+            "app_db_v4"
         )
             .addCallback(object : RoomDatabase.Callback() {
                 override fun onCreate(db: SupportSQLiteDatabase) {
@@ -50,28 +50,28 @@ object DatabaseModule {
                                 Achievement(
                                     title = "재활용마스터",
                                     iconUrl = R.drawable.badge1,
-                                    date = "2025.11.24",
+                                    date = "2025.12.02",
                                     isDone = false,
                                     isBadge=true
                                 ),
                                 Achievement(
                                     title = "분리수거천재",
                                     iconUrl = R.drawable.badge2,
-                                    date = "2025.11.25",
+                                    date = "2025.12.02",
                                     isDone = false,
                                     isBadge=true
                                 ),
                                 Achievement(
                                     title = "텀블러킹",
                                     iconUrl = R.drawable.badge3,
-                                    date = "2025.11.24",
+                                    date = "2025.11.28",
                                     isDone = false,
                                     isBadge=true
                                 ),
                                 Achievement(
                                     title = "분리수거천재",
                                     iconUrl = R.drawable.badge2,
-                                    date = "2025.11.24",
+                                    date = "2025.11.28",
                                     isDone = false,
                                     isBadge=true
                                 ),
@@ -85,13 +85,13 @@ object DatabaseModule {
                                 Achievement(
                                     title = "재활용마스터",
                                     iconUrl = R.drawable.badge3,
-                                    date = "2025.11.25",
+                                    date = "2025.11.26",
                                     isDone = false
                                 ),
                                 Achievement(
                                     title = "재활용마스터",
                                     iconUrl = R.drawable.badge2,
-                                    date = "2025.11.25",
+                                    date = "2025.11.26",
                                     isDone = false
                                 ),
                                 Achievement(
@@ -109,7 +109,7 @@ object DatabaseModule {
                                 Achievement(
                                     title = "분리수거천재",
                                     iconUrl = R.drawable.badge1,
-                                    date = "2025.11.26",
+                                    date = "2025.12.01",
                                     isDone = false
                                 )
                         )

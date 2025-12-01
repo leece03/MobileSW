@@ -14,6 +14,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -30,9 +31,9 @@ fun NewsCard(modifier: Modifier = Modifier,
     Column (
         modifier = modifier
             .padding(1.dp)
-            .width(120.dp)
+            .width(180.dp)
             .clip(RoundedCornerShape(12.dp))
-            .border(0.2.dp, Color.Black)
+            .border(0.2.dp, Color.Black,shape = RoundedCornerShape(12.dp))
         ,
         horizontalAlignment = Alignment.CenterHorizontally
     )
@@ -40,17 +41,19 @@ fun NewsCard(modifier: Modifier = Modifier,
         Image(
             painter = painterResource(id = news.imgId),
             contentDescription = "뉴스 이미지",
+            contentScale = ContentScale.Crop,
             modifier = Modifier
                 .fillMaxWidth()
-                .height(60.dp)
+                .height(80.dp)
         )
         Text(news.source+" · "+news.date,
-            fontSize = 6.sp,
+            fontSize = 10.sp,
             maxLines = 3,
+            color = Color(0xFF3093AC),
             overflow = TextOverflow.Ellipsis,)
         Text(
             text = news.title,
-            fontSize = 10.sp,
+            fontSize = 18.sp,
             fontWeight = FontWeight.Bold,
             modifier = Modifier
                 .padding(horizontal = 6.dp, vertical = 2.dp)
@@ -58,7 +61,7 @@ fun NewsCard(modifier: Modifier = Modifier,
 
         Text(
             text = news.content,
-            fontSize = 8.sp,
+            fontSize = 15.sp,
             maxLines = 3,
             modifier = Modifier
                 .padding(horizontal = 6.dp, vertical = 2.dp)
