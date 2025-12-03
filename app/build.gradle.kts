@@ -15,7 +15,6 @@ plugins {
 android {
     namespace = "com.example.re0"
     compileSdk = 36
-
     defaultConfig {
         applicationId = "com.example.re0"
         minSdk = 24
@@ -59,6 +58,12 @@ dependencies {
     implementation("com.google.firebase:firebase-analytics-ktx")
     implementation("com.google.firebase:firebase-auth-ktx")
     //implementation("com.google.firebase:firebase-firestore-ktx")
+    // Gemini Google AI Client SDK
+    implementation("com.google.ai.client.generativeai:generativeai:0.9.0")
+
+    // Coroutines & ViewModel (비동기 처리를 위해 필요)
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.0")
 
     implementation("androidx.compose.material:material-icons-extended:<version>")
     implementation(libs.androidx.core.ktx)
