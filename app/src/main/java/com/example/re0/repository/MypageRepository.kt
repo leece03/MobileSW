@@ -1,25 +1,49 @@
 package com.example.re0.repository
 
 import com.example.re0.data.AchievementDao
+import com.example.re0.data.Challenge1
 import com.example.re0.data.ProfileDao
-import com.example.re0.model.Achievement
 import com.example.re0.model.Profile
-import jakarta.inject.Inject
+import com.example.re0.model.DailyRecord
+import javax.inject.Inject
 
-open class MypageRepository @Inject constructor(
+class MypageRepository @Inject constructor(
     private val achievementDao: AchievementDao,
-    private val profileDao: ProfileDao,
+    private val profileDao: ProfileDao
 ) {
-    // 1. 챌린지 추가 (이미 잘 작성하셨습니다!)
-    suspend fun insertAchievement(achievement: Achievement) = achievementDao.insertAchievement(achievement)
+    // ------------------------------------------------
+    // ★ ViewModel에서 호출하는 함수들 구현 (오류 해결)
+    // ------------------------------------------------
 
-    // 2. 목록 불러오기
-    suspend fun getAllAchievement(): List<Achievement> = achievementDao.getAllAchievement()
+    // 1. 모든 챌린지 가져오기
+    suspend fun getChallenges(): List<Challenge1> {
+        return achievementDao.getAllChallenges()
+    }
 
-    // 3. ★ [수정됨] 체크 상태 업데이트 (Boolean 파라미터 추가)
-    suspend fun updateAchievementStatus(id: Int, isDone: Boolean) = achievementDao.updateStatus(id, isDone)
+    // 2. 특정 날짜의 기록 가져오기
+    suspend fun getDailyRecord(challengeId: Int, date: String): DailyRecord? {
+        return achievementDao.getRecord(challengeId, date)
+    }
 
-    // --- 프로필 관련 코드는 그대로 유지 ---
+    // 3. 챌린지 추가하기
+    suspend fun addChallenge(title: String) {
+        // Challenge1 생성 시 iconUrl은 기본값(0)이 들어가므로 title만 넣으면 됨
+        achievementDao.insertChallenge(Challenge1(title = title))
+    }
+
+    // 4. 기록 저장하기 (체크박스)
+    suspend fun saveRecord(record: DailyRecord) {
+        achievementDao.insertRecord(record)
+    }
+
+    // 5. 달력용 전체 기록 가져오기
+    suspend fun getAllRecords(): List<DailyRecord> {
+        return achievementDao.getAllRecords()
+    }
+
+    // ------------------------------------------------
+    // 기존 프로필 관련 코드 (유지)
+    // ------------------------------------------------
     suspend fun getProfile(): Profile? = profileDao.getProfile()
     suspend fun updateProfile(profile: Profile) = profileDao.updateProfile(profile)
     suspend fun insertProfile(profile: Profile) = profileDao.insertProfile(profile)
