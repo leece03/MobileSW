@@ -5,13 +5,16 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.example.re0.model.Achievement
+
 @Dao
 interface AchievementDao {
     @Query("SELECT * FROM Achievement")
     suspend fun getAllAchievement(): List<Achievement>
 
-    @Query("UPDATE Achievement SET isDone = 1 WHERE id = :id")
-    suspend fun markDone(id: Int)
+    // ★ [수정 중요] id와 함께 체크 상태(isDone)도 받아야 합니다.
+    @Query("UPDATE Achievement SET isDone = :isDone WHERE id = :id")
+    suspend fun updateStatus(id: Int, isDone: Boolean)
+
     @Insert
     suspend fun insertAchievement(achievement: Achievement)
 
