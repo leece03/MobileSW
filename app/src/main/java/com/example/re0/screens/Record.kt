@@ -44,9 +44,7 @@ import com.example.re0.viewModel.AchievementViewModel
 
 @Composable
 fun RecordScreen(navController: NavController, backStackEntry: NavBackStackEntry) {
-
     val viewModel: AchievementViewModel = hiltViewModel()
-
 
     Scaffold(
         topBar = { TopBar() },
@@ -54,7 +52,6 @@ fun RecordScreen(navController: NavController, backStackEntry: NavBackStackEntry
     ) { innerPadding ->
         RecordContent(innerPadding, viewModel, navController)
     }
-
 }
 
 @Composable
@@ -187,20 +184,17 @@ fun RecordContent(
     innerPadding: PaddingValues,
     viewModel: AchievementViewModel,
     navController: NavController
-)
+) {
+    // ★ [수정] achievementList 대신 uiList(챌린지+오늘체크여부)를 사용
+    val uiList by viewModel.uiList.collectAsState()
 
-{
-    val achievements by viewModel.achievementList.collectAsState()
-
-
-    val totalGoals = achievements.size
-    val totalChecked = achievements.count { it.isDone }
+    val totalGoals = uiList.size
+    val totalChecked = uiList.count { it.isDoneToday }
 
     val progressPercent = if (totalGoals == 0) 0
     else ((totalChecked.toFloat() / totalGoals.toFloat()) * 100).toInt()
 
     val progressFraction = progressPercent / 100f
-
 
     // ----------------------------
 
@@ -216,8 +210,7 @@ fun RecordContent(
         modifier = Modifier.fillMaxWidth()
             .padding(innerPadding)
             .padding(16.dp)
-            .verticalScroll(rememberScrollState())
-        ,
+            .verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.spacedBy(29.dp),
         horizontalAlignment = Alignment.Start,
     ) {
@@ -367,17 +360,16 @@ fun RecordContent(
                 verticalArrangement = Arrangement.Top,
                 horizontalAlignment = Alignment.Start,
             ) {
-
-                achievements.forEach { item ->
+                // ★ [수정] uiList 사용
+                uiList.forEach { item ->
                     RecordGoalItem(
-                        text = item.title,
-                        checked = item.isDone,
+                        text = item.challenge.title,
+                        checked = item.isDoneToday,
                         onCheckedChange = { checked ->
-                            viewModel.markDone(item.id, checked)
+                            viewModel.toggleCheck(item.challenge, checked)
                         }
                     )
                 }
-
             }
         }
     }
