@@ -1,3 +1,5 @@
+import java.util.Properties // 👈 1. [필수] 이 줄이 맨 위에 있어야 local.properties를 읽을 수 있습니다.
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -8,22 +10,34 @@ plugins {
     alias(libs.plugins.google.secrets)
     alias(libs.plugins.google.services)
     //id("com.google.gms.google-services")
-
-
 }
 
 android {
     namespace = "com.example.re0"
-    compileSdk = 36
+    compileSdk = 36 // 원래 설정 유지 (주의: 프리뷰 버전이라 불안정할 수 있음)
     defaultConfig {
         applicationId = "com.example.re0"
         minSdk = 24
-        targetSdk = 36
+        targetSdk = 36 // 원래 설정 유지
         versionCode = 1
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
+        // 👇 2. [추가됨] local.properties에서 키를 읽어오는 로직
+        val localProps = Properties()
+        val localFile = rootProject.file("local.properties")
+        if (localFile.exists()) {
+            localFile.inputStream().use { localProps.load(it) }
+        }
+
+        // Gemini API 키 연결 (BuildConfig)
+        val geminiKey = localProps.getProperty("GEMINI_API_KEY") ?: ""
+        buildConfigField("String", "GEMINI_API_KEY", "\"$geminiKey\"")
+
+        // Google Maps API 키 연결 (Manifest 병합 오류 방지)
+        val mapsKey = localProps.getProperty("MAPS_API_KEY") ?: ""
+        manifestPlaceholders["MAPS_API_KEY"] = mapsKey
     }
 
     buildTypes {
@@ -65,7 +79,9 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.0")
 
-    implementation("androidx.compose.material:material-icons-extended:<version>")
+
+    implementation("androidx.compose.material:material-icons-extended:1.7.5")
+
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
