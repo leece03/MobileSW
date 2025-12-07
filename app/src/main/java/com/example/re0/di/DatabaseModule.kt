@@ -8,7 +8,7 @@ import androidx.sqlite.db.SupportSQLiteDatabase
 import com.example.re0.data.AchievementDao
 import com.example.re0.data.AppDatabase
 import com.example.re0.data.ProfileDao
-import com.example.re0.data.Challenge1 // ★ 모델 import 확인
+import com.example.re0.model.DailyRecord // ★ Import 확인
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -18,6 +18,9 @@ import jakarta.inject.Singleton
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -34,30 +37,27 @@ object DatabaseModule {
         instance = Room.databaseBuilder(
             context,
             AppDatabase::class.java,
-            "app_db_v5" // ★ 버전 올려서 초기화 (혹은 앱 삭제 후 재실행)
+            "app_db_v10" // ★ 버전을 10으로 올림 (앱 삭제 후 재설치 필수)
         )
             .addCallback(object : RoomDatabase.Callback() {
                 override fun onCreate(db: SupportSQLiteDatabase) {
                     super.onCreate(db)
-
                     CoroutineScope(Dispatchers.IO).launch {
                         val dao = instance.achievementDao()
 
-                        // ★ [수정] Challenge1에 맞는 초기 데이터
-                        val initialChallenges = listOf(
-                            Challenge1(title = "배달음식 안 시켜먹기"),
-                            Challenge1(title = "텀블러 사용하기"),
-                            Challenge1(title = "분리수거 잘하기")
+                        // 오늘 날짜 구하기
+                        val today = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
+
+                        val initialRecords = listOf(
+                            DailyRecord(title = "배달음식 안 시켜먹기", date = today, isDone = false, iconUrl = 0),
+                            DailyRecord(title = "텀블러 사용하기", date = today, isDone = false, iconUrl = 0)
                         )
 
                         try {
-                            // ★ [수정] insertAll 대신 하나씩 추가
-                            initialChallenges.forEach {
-                                dao.insertChallenge(it)
-                            }
-                            Log.d("DB", "Default challenges inserted!")
+                            initialRecords.forEach { dao.insertRecord(it) }
+                            Log.d("DB", "Default records inserted!")
                         } catch (e: Exception) {
-                            Log.e("DB", "Failed to insert default challenges", e)
+                            Log.e("DB", "Failed to insert default records", e)
                         }
                     }
                 }
@@ -66,8 +66,6 @@ object DatabaseModule {
             .build()
 
         INSTANCE = instance
-        Log.d("DB", "Database instance created")
-
         return instance
     }
 
