@@ -1,21 +1,10 @@
 package com.example.re0.screens
 
-// [1] 모든 Import는 파일 맨 위에 있어야 합니다.
 import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
@@ -25,21 +14,8 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowForward
-import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Button
-import androidx.compose.material3.Checkbox
-import androidx.compose.material3.Divider
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
@@ -52,32 +28,29 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.NavController
-import com.example.re0.model.DailyRecord // ★ 일일 기록 모델
+import com.example.re0.model.DailyRecord
 import com.example.re0.ui.theme.Mint
 import com.example.re0.viewModel.AchievementViewModel
-// [2] 구형 날짜 라이브러리 (API 레벨 호환성용)
 import java.util.Calendar
 import java.util.Date
 import java.text.SimpleDateFormat
 import java.util.Locale
-import kotlin.collections.filter
 
 // ------------------------------
-// [3] 색상 상수 정의
+// [1] 색상 상수
 // ------------------------------
 val AchievementYellow = Color(0xFFFFE082) // 1/3 달성
 val AchievementSkyBlue = Color(0xFF81D4FA) // 2/3 달성
-val AchievementMint = Color(0xFF00E676)    // 100% 달성
+val AchievementMint = Mint    // 100% 달성
 val AchievementGray = Color(0xFFF5F5F5)    // 기본 배경
 
 // ------------------------------
-// [4] 날짜별 색상 계산 함수 (DailyRecord 사용)
+// [2] 날짜별 색상 계산 함수 (수정됨: DailyRecord 사용)
 // ------------------------------
 fun getDayColor(
     date: Date,
-    records: List<DailyRecord>
+    records: List<DailyRecord> // ★ [수정] 입력 타입을 DailyRecord 리스트로 변경
 ): Color {
-    // 날짜를 "yyyy-MM-dd" 문자열로 변환
     val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
     val dateString = dateFormat.format(date)
 
@@ -99,23 +72,20 @@ fun getDayColor(
 }
 
 // ------------------------------
-// [5] 커스텀 캘린더 컴포넌트
+// [3] 커스텀 캘린더 컴포넌트 (수정됨: DailyRecord 사용)
 // ------------------------------
 @Composable
 fun CustomStatsCalendar(
-    records: List<DailyRecord>, // Achievement 대신 DailyRecord 리스트를 받음
+    records: List<DailyRecord>, // ★ [수정] 입력 타입을 DailyRecord 리스트로 변경
     onDateSelected: (String) -> Unit
 ) {
-    // Calendar 인스턴스 사용하여 상태 유지
     var currentCalendar by remember { mutableStateOf(Calendar.getInstance()) }
 
     Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(16.dp),
+        modifier = Modifier.fillMaxWidth().padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        // [A] 상단: 년/월 표시 및 이동 버튼
+        // [상단] 년/월 표시 및 이동 버튼
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween,
@@ -131,11 +101,7 @@ fun CustomStatsCalendar(
 
             val year = currentCalendar.get(Calendar.YEAR)
             val month = currentCalendar.get(Calendar.MONTH) + 1
-            Text(
-                text = "${year}년 ${month}월",
-                fontSize = 20.sp,
-                fontWeight = FontWeight.Bold
-            )
+            Text(text = "${year}년 ${month}월", fontSize = 20.sp, fontWeight = FontWeight.Bold)
 
             IconButton(onClick = {
                 val newCal = currentCalendar.clone() as Calendar
@@ -148,23 +114,17 @@ fun CustomStatsCalendar(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // [B] 요일 헤더
+        // [중단] 요일 헤더
         Row(modifier = Modifier.fillMaxWidth()) {
             val daysOfWeek = listOf("일", "월", "화", "수", "목", "금", "토")
             daysOfWeek.forEach { day ->
-                Text(
-                    text = day,
-                    modifier = Modifier.weight(1f),
-                    textAlign = TextAlign.Center,
-                    color = Color.Gray,
-                    fontWeight = FontWeight.Medium
-                )
+                Text(text = day, modifier = Modifier.weight(1f), textAlign = TextAlign.Center, color = Color.Gray, fontWeight = FontWeight.Medium)
             }
         }
 
         Spacer(modifier = Modifier.height(8.dp))
 
-        // [C] 날짜 그리드
+        // [하단] 날짜 그리드
         val daysInMonth = currentCalendar.getActualMaximum(Calendar.DAY_OF_MONTH)
         val tempCal = currentCalendar.clone() as Calendar
         tempCal.set(Calendar.DAY_OF_MONTH, 1)
@@ -176,9 +136,7 @@ fun CustomStatsCalendar(
             verticalArrangement = Arrangement.spacedBy(4.dp),
             horizontalArrangement = Arrangement.spacedBy(4.dp)
         ) {
-            items(firstDayOfWeek) {
-                Box(modifier = Modifier.size(40.dp))
-            }
+            items(firstDayOfWeek) { Box(modifier = Modifier.size(40.dp)) }
 
             items(daysInMonth) { index ->
                 val day = index + 1
@@ -186,7 +144,7 @@ fun CustomStatsCalendar(
                 dayCal.set(Calendar.DAY_OF_MONTH, day)
                 val date = dayCal.time
 
-                // 색상 계산 (DailyRecord 리스트 전달)
+                // ★ [수정] records(DailyRecord 리스트)를 넘겨줍니다.
                 val backgroundColor = getDayColor(date, records)
                 val isTransparent = backgroundColor == Color.Transparent
 
@@ -215,7 +173,7 @@ fun CustomStatsCalendar(
 }
 
 // ------------------------------
-// [6] 메인 화면
+// [4] 메인 화면
 // ------------------------------
 @Composable
 fun ChallengeScreen(
@@ -231,7 +189,7 @@ fun ChallengeScreen(
 }
 
 // ------------------------------
-// [7] 추가 다이얼로그
+// [5] 추가 다이얼로그
 // ------------------------------
 @Composable
 fun AddChallengeDialog(
@@ -269,7 +227,7 @@ fun AddChallengeDialog(
 }
 
 // ------------------------------
-// [8] 본문 컨텐츠 (리스트 + 달력 연결)
+// [6] 본문 컨텐츠
 // ------------------------------
 @Composable
 fun ChallengeContent(
@@ -277,7 +235,6 @@ fun ChallengeContent(
     navController: NavController,
     viewModel: AchievementViewModel
 ) {
-    // ★ ViewModel에서 만든 "화면용 리스트(uiList)"와 "달력용 기록(calendarRecords)" 구독
     val uiList by viewModel.uiList.collectAsState()
     val calendarRecords by viewModel.calendarRecords.collectAsState()
 
@@ -287,146 +244,62 @@ fun ChallengeContent(
         AddChallengeDialog(
             onDismiss = { showAddDialog = false },
             onConfirm = { newGoal ->
-                viewModel.addChallenge(newGoal) // 이름 변경 반영 (addAchievement -> addChallenge)
+                viewModel.addChallenge(newGoal)
                 showAddDialog = false
             }
         )
     }
 
     Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(innerPadding)
-            .padding(16.dp)
-            .verticalScroll(rememberScrollState()),
+        modifier = Modifier.fillMaxWidth().padding(innerPadding).padding(16.dp).verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.spacedBy(29.dp, Alignment.Top),
         horizontalAlignment = Alignment.Start,
     ) {
-        // [섹션 1] 챌린지 등록
+        // [챌린지 등록 섹션]
         Column(
-            modifier = Modifier
-                .border(width = 1.dp, color = Mint, shape = RoundedCornerShape(size = 10.dp)),
-            verticalArrangement = Arrangement.spacedBy(3.dp, Alignment.CenterVertically),
-            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier.border(1.dp, Mint, RoundedCornerShape(10.dp))
         ) {
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .drawBehind {
-                        val strokeWidth = 2.dp.toPx()
-                        val y = size.height - strokeWidth / 2
-                        drawLine(color = Color(0xFF79ECF4), start = Offset(0f, y), end = Offset(size.width, y), strokeWidth = strokeWidth)
-                    }
-                    .padding(top = 5.dp, bottom = 5.dp),
-                verticalArrangement = Arrangement.spacedBy(12.dp, Alignment.Top),
-                horizontalAlignment = Alignment.CenterHorizontally,
-            ) {
-                Text(
-                    text = "챌린지 등록",
-                    fontSize = 24.sp,
-                    lineHeight = 33.6.sp,
-                    fontWeight = FontWeight(700),
-                    color = Color(0xFF000000),
-                )
+            Column(modifier = Modifier.fillMaxWidth().drawBehind { drawLine(Color(0xFF79ECF4), Offset(0f, size.height), Offset(size.width, size.height), 5f) }.padding(5.dp)) {
+                Text("챌린지 등록", fontSize = 24.sp, fontWeight = FontWeight.Bold, modifier = Modifier.align(Alignment.CenterHorizontally))
             }
-
-            Column(
-                modifier = Modifier.padding(10.dp),
-                verticalArrangement = Arrangement.spacedBy(5.dp, Alignment.Top),
-                horizontalAlignment = Alignment.CenterHorizontally,
-            ) {
-                Text(
-                    text = "나만의 챌린지를 등록해 보세요",
-                    fontSize = 16.sp,
-                    color = Color(0xFF656565),
-                )
-                Column(
-                    modifier = Modifier
-                        .width(348.dp)
-                        .height(42.dp)
-                        .background(color = Color(0xFFE3F3FB), shape = RoundedCornerShape(size = 13.125.dp))
-                        .clickable { showAddDialog = true }
-                        .padding(start = 18.dp, top = 10.dp, end = 18.dp, bottom = 10.dp),
-                    verticalArrangement = Arrangement.Center,
-                    horizontalAlignment = Alignment.Start,
-                ) {
-                    Text(
-                        text = "입력하기",
-                        fontSize = 16.sp,
-                        color = Color(0xFF656565),
-                    )
+            Column(modifier = Modifier.padding(10.dp), horizontalAlignment = Alignment.CenterHorizontally) {
+                Text("나만의 챌린지를 등록해 보세요", fontSize = 16.sp, color = Color.Gray)
+                Box(modifier = Modifier.width(348.dp).height(42.dp).background(Color(0xFFE3F3FB), RoundedCornerShape(13.dp)).clickable { showAddDialog = true }.padding(start = 18.dp), contentAlignment = Alignment.CenterStart) {
+                    Text("입력하기", fontSize = 16.sp, color = Color.Gray)
                 }
             }
         }
 
-        // [섹션 2] 달성 기록
+        // [달성 기록 섹션]
         Column(
-            modifier = Modifier
-                .border(width = 1.dp, color = Mint, shape = RoundedCornerShape(size = 10.dp)),
-            verticalArrangement = Arrangement.spacedBy(3.dp, Alignment.CenterVertically),
-            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier.border(1.dp, Mint, RoundedCornerShape(10.dp))
         ) {
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .drawBehind {
-                        val strokeWidth = 2.dp.toPx()
-                        val y = size.height - strokeWidth / 2
-                        drawLine(color = Color(0xFF79ECF4), start = Offset(0f, y), end = Offset(size.width, y), strokeWidth = strokeWidth)
-                    }
-                    .padding(top = 5.dp, bottom = 5.dp),
-                verticalArrangement = Arrangement.spacedBy(12.dp, Alignment.Top),
-                horizontalAlignment = Alignment.CenterHorizontally,
-            ) {
-                Text(
-                    text = "달성 기록",
-                    fontSize = 24.sp,
-                    fontWeight = FontWeight(700),
-                    color = Color(0xFF000000),
-                )
-                Text(
-                    text = "나만의 목표 등록 및 달성 기록",
-                    fontSize = 16.sp,
-                    color = Color(0xFF656565),
-                )
+            Column(modifier = Modifier.fillMaxWidth().drawBehind { drawLine(Color(0xFF79ECF4), Offset(0f, size.height), Offset(size.width, size.height), 5f) }.padding(5.dp)) {
+                Text("달성 기록", fontSize = 24.sp, fontWeight = FontWeight.Bold, modifier = Modifier.align(Alignment.CenterHorizontally))
+                Text("나만의 목표 등록 및 달성 기록", fontSize = 16.sp, color = Color.Gray, modifier = Modifier.align(Alignment.CenterHorizontally))
             }
 
             Column(
-                modifier = Modifier
-                    .background(color = Color(0xEBFFFFFF), shape = RoundedCornerShape(size = 15.dp))
-                    .padding(10.dp),
-                verticalArrangement = Arrangement.spacedBy(0.dp, Alignment.Top),
-                horizontalAlignment = Alignment.Start,
+                modifier = Modifier.background(Color(0xEBFFFFFF), RoundedCornerShape(15.dp)).padding(10.dp)
             ) {
-                // ★ 커스텀 캘린더 (DailyRecord 리스트 전달)
+                // ★ 커스텀 캘린더 (이제 에러가 나지 않습니다!)
                 CustomStatsCalendar(
                     records = calendarRecords,
-                    onDateSelected = { selectedDate ->
-                        Log.d("CALENDAR", "$selectedDate 선택됨")
-                    }
+                    onDateSelected = { Log.d("CALENDAR", "$it") }
                 )
 
-                Divider(
-                    modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp),
-                    color = Mint,
-                    thickness = 1.dp
-                )
+                Divider(modifier = Modifier.padding(vertical = 8.dp), color = Mint, thickness = 1.dp)
 
-                // ★ 리스트 렌더링 (uiList 사용)
+                // 리스트 렌더링
                 if (uiList.isEmpty()) {
-                    Text(
-                        text = "등록된 챌린지가 없습니다.",
-                        modifier = Modifier.padding(16.dp),
-                        color = Color.Gray
-                    )
+                    Text("등록된 챌린지가 없습니다.", modifier = Modifier.padding(16.dp), color = Color.Gray)
                 } else {
                     uiList.forEach { item ->
                         ChallengeGoalItem(
-                            text = item.challenge.title, // 챌린지 이름
-                            checked = item.isDoneToday,  // 오늘의 성공 여부
+                            text = item.title,
+                            checked = item.isDone,
                             onCheckedChange = { isChecked ->
-                                // 체크 상태 변경 시 (Challenge1 객체를 넘김)
-                                viewModel.toggleCheck(item.challenge, isChecked)
+                                viewModel.toggleCheck(item, isChecked)
                             }
                         )
                     }
@@ -442,35 +315,10 @@ fun ChallengeGoalItem(
     checked: Boolean,
     onCheckedChange: (Boolean) -> Unit
 ) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(54.dp)
-            .padding(vertical = 6.dp),
-        horizontalArrangement = Arrangement.spacedBy(5.dp),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Checkbox(
-            checked = checked,
-            onCheckedChange = onCheckedChange,
-            modifier = Modifier.scale(1.4f)
-        )
-        Row(
-            modifier = Modifier
-                .weight(1f)
-                .height(42.dp)
-                .background(
-                    color = Color(0xFFD4F1FD),
-                    shape = RoundedCornerShape(13.125.dp)
-                )
-                .padding(horizontal = 14.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Text(
-                text = text,
-                fontSize = 16.sp,
-                color = Color(0xFF656565)
-            )
+    Row(modifier = Modifier.fillMaxWidth().height(54.dp).padding(vertical = 6.dp), verticalAlignment = Alignment.CenterVertically) {
+        Checkbox(checked = checked, onCheckedChange = onCheckedChange, modifier = Modifier.scale(1.4f))
+        Row(modifier = Modifier.weight(1f).height(42.dp).background(Color(0xFFD4F1FD), RoundedCornerShape(13.dp)).padding(horizontal = 14.dp), verticalAlignment = Alignment.CenterVertically) {
+            Text(text = text, fontSize = 16.sp, color = Color.Gray)
         }
     }
 }

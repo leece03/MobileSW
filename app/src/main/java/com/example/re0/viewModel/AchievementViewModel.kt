@@ -2,32 +2,27 @@ package com.example.re0.viewModel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.re0.data.Challenge1
 import com.example.re0.model.DailyRecord
 import com.example.re0.repository.MypageRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
-import java.text.SimpleDateFormat
+import java.text.SimpleDateFormat // ★ 구형 API 사용 (오류 해결)
 import java.util.Date
 import java.util.Locale
 import javax.inject.Inject
-import kotlin.collections.map
-
-data class ChallengeUiItem(
-    val challenge: Challenge1,
-    val isDoneToday: Boolean
-)
 
 @HiltViewModel
 class AchievementViewModel @Inject constructor(
     private val repository: MypageRepository
 ) : ViewModel() {
 
-    private val _uiList = MutableStateFlow<List<ChallengeUiItem>>(emptyList())
-    val uiList: StateFlow<List<ChallengeUiItem>> = _uiList
+    // 화면용 리스트 (오늘 것만)
+    private val _uiList = MutableStateFlow<List<DailyRecord>>(emptyList())
+    val uiList: StateFlow<List<DailyRecord>> = _uiList
 
+    // 달력용 전체 기록
     private val _calendarRecords = MutableStateFlow<List<DailyRecord>>(emptyList())
     val calendarRecords: StateFlow<List<DailyRecord>> = _calendarRecords
 
@@ -35,47 +30,58 @@ class AchievementViewModel @Inject constructor(
         loadData()
     }
 
+    // [API 24 호환] 오늘 날짜 구하기
+    private fun getTodayDate(): String {
+        val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+        return dateFormat.format(Date())
+    }
+
     fun loadData() {
         viewModelScope.launch {
-            val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
-            val today = dateFormat.format(Date())
-
-            // Repository 함수 호출 (이제 빨간 줄 안 뜸)
-            val challenges = repository.getChallenges()
-
-            val uiItems = challenges.map { challenge ->
-                val record = repository.getDailyRecord(challenge.id, today)
-                val isDone = record?.isDone ?: false
-                ChallengeUiItem(challenge, isDone)
-            }
-            _uiList.value = uiItems
+            val today = getTodayDate()
+            // 1. 오늘 날짜 기록만 가져옴 (내일 되면 리스트 비워짐)
+            _uiList.value = repository.getRecordsByDate(today)
+            // 2. 달력용 전체 기록
             _calendarRecords.value = repository.getAllRecords()
         }
     }
 
+    // 추가 (오늘 날짜로 저장)
     fun addChallenge(title: String) {
         viewModelScope.launch {
-            repository.addChallenge(title)
+            val newRecord = DailyRecord(
+                title = title,
+                isDone = false,
+                date = getTodayDate(), // 오늘 날짜 박제
+                iconUrl = 0 // [오류 해결] 기본값 추가
+            )
+            repository.addRecord(newRecord)
             loadData()
         }
     }
 
-    fun toggleCheck(challenge: Challenge1, isChecked: Boolean) {
+    // 체크 (성공 여부 변경)
+    fun toggleCheck(record: DailyRecord, isChecked: Boolean) {
         viewModelScope.launch {
-            val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
-            val today = dateFormat.format(Date())
+            val updated = record.copy(isDone = isChecked)
+            repository.updateRecord(updated)
+            loadData()
+        }
+    }
 
-            val oldRecord = repository.getDailyRecord(challenge.id, today)
+    // 수정 (제목 변경)
+    fun updateChallenge(record: DailyRecord, newTitle: String) {
+        viewModelScope.launch {
+            val updated = record.copy(title = newTitle)
+            repository.updateRecord(updated)
+            loadData()
+        }
+    }
 
-            // DailyRecord 생성 시 필요한 값만 넣음
-            val newRecord = DailyRecord(
-                id = oldRecord?.id ?: 0,
-                challengeId = challenge.id,
-                date = today,
-                isDone = isChecked
-            )
-
-            repository.saveRecord(newRecord)
+    // 삭제
+    fun deleteChallenge(record: DailyRecord) {
+        viewModelScope.launch {
+            repository.deleteRecord(record)
             loadData()
         }
     }
