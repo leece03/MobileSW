@@ -1,5 +1,7 @@
 package com.example.re0.components
+
 import android.os.Build
+import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.Spacer
@@ -22,13 +24,25 @@ import java.time.format.DateTimeFormatter
 
 @RequiresApi(Build.VERSION_CODES.O)
 fun groupRecent7Days(achievements: List<Achievement>): Map<LocalDate, Int> {
-    val formatter = DateTimeFormatter.ofPattern("yyyy.MM.dd")
-
     val today = LocalDate.now()
     val sevenDaysAgo = today.minusDays(6)
 
     return achievements
-        .map { LocalDate.parse(it.date, formatter) }
+        .filter { !it.isBadge } // ★ [핵심] 배지는 그래프 계산에서 제외 (이게 없으면 앱 꺼짐)
+        .mapNotNull { achievement ->
+            try {
+                // 날짜 포맷이 '-' 인지 '.' 인지 몰라도 둘 다 시도
+                val dateStr = achievement.date?.trim() ?: ""
+                if (dateStr.contains(".")) {
+                    LocalDate.parse(dateStr, DateTimeFormatter.ofPattern("yyyy.MM.dd"))
+                } else {
+                    LocalDate.parse(dateStr, DateTimeFormatter.ofPattern("yyyy-MM-dd"))
+                }
+            } catch (e: Exception) {
+                // 날짜가 아닌 데이터("환경" 등)가 있어도 무시하고 넘어감
+                null
+            }
+        }
         .filter { it in sevenDaysAgo..today }
         .groupingBy { it }
         .eachCount()
@@ -54,7 +68,7 @@ fun AchievementsGraph(
             val dailyDate = groupRecent7Days(achievements)
 
             if (dailyDate.isEmpty()) {
-                Text("아직 기록이 없습니다")
+                Text("최근 7일간의 기록이 없습니다", modifier = Modifier.padding(20.dp))
                 return@CardTemplate
             }
 
@@ -65,31 +79,28 @@ fun AchievementsGraph(
             Canvas(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(200.dp) // 라벨 공간 확보
+                    .height(200.dp)
                     .padding(vertical = 20.dp)
                     .padding(horizontal = 10.dp)
-                    //.padding(start = 10.dp)// 왼쪽 개수 표기
-
             ) {
                 val leftPadding = 35.dp.toPx()
-                val width = size.width-20.dp.toPx()
-                val height = size.height - 20.dp.toPx() // 텍스트 영역 제외
+                val width = size.width - 20.dp.toPx()
+                val height = size.height - 20.dp.toPx()
 
                 val stepX = if (points.size > 1) {
-                    width / (points.size - 1) *0.9f
+                    width / (points.size - 1) * 0.9f
                 } else {
-                    width // 한 점이면 중앙 배치
+                    width
                 }
 
                 val normalized = points.map { it.toFloat() / maxValue }
                 val yAxisValues = (0..maxValue).toList()
 
-                // 점이 2개 이상일 때만 라인 그리기
                 if (points.size > 1) {
                     for (i in 1 until points.size) {
-                        val x1 = leftPadding +(i - 1) * stepX
+                        val x1 = leftPadding + (i - 1) * stepX
                         val y1 = height - normalized[i - 1] * height
-                        val x2 = leftPadding +i * stepX
+                        val x2 = leftPadding + i * stepX
                         val y2 = height - normalized[i] * height
 
                         drawLine(
@@ -101,9 +112,8 @@ fun AchievementsGraph(
                     }
                 }
 
-                // 점
                 normalized.forEachIndexed { index, value ->
-                    val x = leftPadding +index * stepX
+                    val x = leftPadding + index * stepX
                     val y = height - value * height
                     drawCircle(
                         color = Color(0xFF4CAF50),
@@ -112,13 +122,12 @@ fun AchievementsGraph(
                     )
                 }
 
-                // 날짜 라벨
                 dateLabels.forEachIndexed { index, value ->
-                    val x = leftPadding +index * stepX
+                    val x = leftPadding + index * stepX
                     drawContext.canvas.nativeCanvas.drawText(
                         value,
                         x,
-                        size.height, // 패딩 확보로 안 짤림
+                        size.height,
                         android.graphics.Paint().apply {
                             color = android.graphics.Color.DKGRAY
                             textAlign = android.graphics.Paint.Align.CENTER
@@ -132,13 +141,12 @@ fun AchievementsGraph(
 
                     drawContext.canvas.nativeCanvas.drawText(
                         value.toString(),
-                        0f, // 왼쪽 고정
+                        0f,
                         posY,
                         android.graphics.Paint().apply {
                             color = android.graphics.Color.DKGRAY
                             textAlign = android.graphics.Paint.Align.LEFT
                             textSize = 28f
-
                         }
                     )
                 }
